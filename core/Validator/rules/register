@@ -1,0 +1,10 @@
+<?php 
+return [
+    'last_name' => 'required|min:5|max:20',
+    'first_name' => 'required|min:5|max:20',
+    'middle_name' => 'required|min:5|max:20',
+    'email' => 'required|email',
+    'terms' => 'required',
+    'password' => 'required|min:5'
+];
+?>
