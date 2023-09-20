@@ -1,7 +1,15 @@
 <?php 
 $errors = json_decode($errors,true) ?? null;
-include($this->includePath("inc\header")); 
 ?>
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title><?= $title ?></title>
+    <link rel="icon" type="image/x-icon" href="<?= APP_ASSETS_FOLDER . "/images/favicon.ico"?>">
+    <?php $this->getPlugins("header"); ?>
+</head>
 <body class="hold-transition login-page">
 <div class="login-box">
   <div class="login-logo">
@@ -61,7 +69,7 @@ include($this->includePath("inc\header"));
       <!-- /.social-auth-links -->
 
       <p class="mb-1">
-        <a href="../public/index.php"><?= _("I forgot my password") ?></a>
+        <a href="<?= APP_URL_F ?>/new_password"><?= _("I forgot my password") ?></a>
       </p>
       <p class="mb-0">
         <a href="<?= APP_URL_F ?>/auth/register" class="text-center"><?= _("Register a new membership") ?></a>

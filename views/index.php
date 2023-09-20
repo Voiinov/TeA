@@ -7,6 +7,7 @@ $errors = json_decode($errors, true) ?? null;
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><?= $this->pageTitle() ?></title>
+    <link rel="icon" type="image/x-icon" href="<?= APP_ASSETS_FOLDER . "/images/favicon.ico"?>">
     <?php $this->getPlugins("header"); ?>
 </head>
 <body class="sidebar-mini layout-fixed">
@@ -23,8 +24,14 @@ $errors = json_decode($errors, true) ?? null;
                 <?php if (isset($breadcrumbs)): ?>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="#">Home</a></li>
-                            <li class="breadcrumb-item active">Invoice</li>
+                            <li class="breadcrumb-item"><a href="<?= APP_URL_F ?>">Home</a></li>
+                            <?php
+                                foreach($breadcrumbs as $item){
+                                    echo '<li class="breadcrumb-item">';
+                                    echo isset($item[1]) ? '<a href="' . $item[1] . '">' . $item[0] . '</a>' : $item[0] ;
+                                    echo "</li>";
+                                }
+                            ?>
                         </ol>
                     </div>
                 <?php endif; ?>
@@ -33,9 +40,7 @@ $errors = json_decode($errors, true) ?? null;
     </section>
     <section class="content">
         <div class="container-fluid">
-
-            <?= $module->getContent(); ?>
-
+            <?= $module->getContent($page); ?>
         </div>
     </section>
 </div>

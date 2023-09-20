@@ -4,61 +4,96 @@ namespace App\Controllers;
 
 use Core\Services\Auth\Auth;
 use Core\Services\Cookie;
+use Core\Services\User;
 use Core\Views;
 
-class AuthController extends Views{
+class AuthController extends Views
+{
 
-  protected $errors;
+    protected $errors;
 
-  private $data;
+    private $data;
 
-  public function __construct($page){
+    public function __construct($page)
+    {
 
-    if(Auth::isLoggedIn()){
-      parent::redirect();
-    }
+        if (Auth::isLoggedIn()) {
+            parent::redirect();
+        }
 
-    $cookie = Cookie::getInstance();
-    
-    $this->errors = $cookie::getErrors();
+        $cookie = Cookie::getInstance();
 
-    $this->data = [
-        "plugins"=>[
-            "header"=>[
-                "googleFont"=>[],
-                "fontAwesomeIcons"=>[],
-                "adminLTE"=>[],
-            ],
-            "footer"=>[
-                "jQuery"=>[],
-                "bootstrap"=>[],
-                "jqueryValidation"=>[],
-                "app"=>[]
+        $this->errors = $cookie::getErrors();
+
+        $this->data = [
+            "plugins" => [
+                "header" => [
+                    "googleFont" => [],
+                    "fontAwesomeIcons" => [],
+                    "adminLTE" => [],
+                ],
+                "footer" => [
+                    "jQuery" => [],
+                    "bootstrap" => [],
+                    "jqueryValidation" => [],
+                    "app" => []
+                ]
             ]
-        ]
-      ];
-    
-  }
-    
-    public function lock($data=[]){
-      // $data = 
+        ];
 
-      // Створення об'єкту View та виклик методу render()
-      views::render('lock', $data);
     }
 
-    public function login($data=[]){
+    public function lock($data = [])
+    {
+        // $data =
+
         // Створення об'єкту View та виклик методу render()
-        $data = ['title'=>_('Authentication')];
+        views::render('lock', $data);
+    }
+
+    public function reset($data = [])
+    {
+
+        if (isset($_GET['token']) && $_GET['token'] != "") {
+            $user = User::applyResetUserPassword($_GET['token']);
+        } else
+            $user = false;
+
+        views::render('lock', ["title" => _("Password reset"), "userdata" => $user]);
+    }
+
+
+    public function newPassword($data = [])
+    {
+        views::render('lock', ["title" => _("Password reset"), "sent_new_password_form" => true]);
+    }
+
+    public function newPasswordSent()
+    {
+        if ($_POST['email'] != "") {
+            User::resetPassword($_POST['email']);
+            views::render('lock', ["title" => _("New password was sent"),"sent_new_password_was_form"=>true]);
+            return;
+        }
+
+        views::render('lock', ["title" => _("Password reset"), "sent_new_password_form" => true]);
+
+    }
+
+    public function login($data = [])
+    {
+        // Створення об'єкту View та виклик методу render()
+        $data = ['title' => _('Authentication')];
         views::render('login', array_merge($this->data, $data));
     }
 
-    public function register($data=[]){
+    public function register($data = [])
+    {
         $data = [
-                'title' => _('Registration'),
-                "plugins"=>[
-                    "footer"=>[
-                        "customJSCode"=>["code"=>"$(function () {
+            'title' => _('Registration'),
+            "plugins" => [
+                "footer" => [
+                    "customJSCode" => ["code" => "$(function () {
                             $('#registerForm').validate({
                               rules: {
                                 email: {
@@ -105,12 +140,12 @@ class AuthController extends Views{
                               }
                             });
                           });"],
-                        "app"=>[]
-                    ]
+                    "app" => []
                 ]
-            ];
-        
-        
+            ]
+        ];
+
+
         // Створення об'єкту View та виклик методу render()
         views::render('register', array_merge($this->data, $data));
     }

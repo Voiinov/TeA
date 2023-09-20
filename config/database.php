@@ -1,7 +1,8 @@
 <?php
-
-$config['db_host'] = 'localhost';
-$config['db_name'] = 'my_database';
-$config['db_user'] = 'my_username';
-$config['db_pass'] = 'my_password';
-$config['db_charset'] = 'utf8mb4';
+return [
+        'host' => '127.0.0.1',
+        'dbname' => 'tea_db',
+        'username' => 'root',
+        'password' => '',
+        'charset' => 'utf8mb4'
+];
