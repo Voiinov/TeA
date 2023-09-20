@@ -20,6 +20,12 @@ class DashboardController extends Views
         Views::render("index", $this->data);
     }
 
+    public function profile(): void
+    {
+        Views::render("index", $this->data);
+    }
+
+
     public function about(array $data = []): void
     {
         // Створення об'єкту View та виклик методу render()
