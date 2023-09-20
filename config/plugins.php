@@ -17,7 +17,7 @@ function adminLTE($layout, $param)
     if ($layout == "header")
         return "    <!-- Theme style -->
         <link rel=\"stylesheet\" href=\"" . APP_ASSETS_FOLDER . "/css/adminlte.min.css\">";
-    if ($layout == "footer")
+//    if ($layout == "footer")
         return "<script src=\"" . APP_ASSETS_FOLDER . "/js/adminlte.js\"></script>";
 
 }
@@ -46,7 +46,15 @@ function jqueryValidation($layout, $params)
 
 function customJSCode($layout, $params): string
 {
-    return "<script>" . $params["code"] . "</script>";
+    if(isset($params["code"])){
+        return "<script>" . $params["code"] . "</script>";
+    }
+
+    if(isset($params["src"])){
+        return '<script src="' . APP_ASSETS_FOLDER . $params["src"] . '"></script>';
+    }
+    return "";
+
 }
 
 function Ionicons($layout)
@@ -78,4 +86,12 @@ function DataTables($layout){
 <script src=\"" . APP_ASSETS_FOLDER . "/plugins/datatables-buttons/js/buttons.html5.min.js\"></script>
 <script src=\"" . APP_ASSETS_FOLDER . "/plugins/datatables-buttons/js/buttons.print.min.js\"></script>
 <script src=\"" . APP_ASSETS_FOLDER . "/plugins/datatables-buttons/js/buttons.colVis.min.js\"></script>";
+}
+
+function fullcalendar($layout){
+    return "<!-- fullCalendar -->
+<script src=\"" . APP_ASSETS_FOLDER . "/plugins/moment/moment.min.js\"></script>
+<script src=\"" . APP_ASSETS_FOLDER . "/plugins/fullcalendar/index.global.min.js\"></script>
+<script src=\"" . APP_ASSETS_FOLDER . "/plugins/fullcalendar/locales-all.min.js\"></script>";
+
 }

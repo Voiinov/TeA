@@ -7,7 +7,12 @@
             "email": "filekeeper85@gmail.com"
         }
     ],
-    "require": {},
+    "require": {
+      "ext-gettext": "*",
+      "ext-pdo": "*",
+      "ext-json": "*",
+        "phpmailer/phpmailer": "^6.8"
+    },
     "autoload": {
         "psr-4": {
             "Core\\": "core",

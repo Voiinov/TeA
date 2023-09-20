@@ -1,4 +1,7 @@
-/.env.example
 /composer.phar
 /.idea
 /vendor
+/app/modules/synchronizer/
+/public/storage/avatars
+/config/unsplash-key.php
+/config/database.php
