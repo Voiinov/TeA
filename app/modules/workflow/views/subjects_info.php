@@ -46,7 +46,7 @@ $cover = is_null($subject[0]['cover']) ? "public/assets/images/subjects/educatio
                     <a href="#" class="btn btn-sm bg-teal disabled" style="pointer-events: auto">
                         <i class="fas fa-comments"></i>
                     </a>
-                    <a href="<?= APP_URL_F . "/profile=" . $educator['id'] ?>" class="btn btn-sm btn-primary">
+                    <a href="<?= APP_URL_F . "/profile?u=" . $educator['id'] ?>" class="btn btn-sm btn-primary">
                         <i class="fas fa-user"></i> <?= _("View Profile") ?>
                     </a>
                 </div>
