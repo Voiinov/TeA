@@ -43,11 +43,13 @@ $group = 0;
                             class="fas fa-plus"></i> <?= _("Add task") ?></button>
             </div>
         </div>
+        <!-- calendar -->
         <div class="card card-primary">
             <div class="card-body p-0">
                 <div id="calendar"></div>
             </div>
         </div>
+        <!-- ./calendar -->
     </div>
     <div class="col-md-4 col-12">
         <div class="card">
@@ -62,16 +64,34 @@ $group = 0;
             <div class="card-body p-2">
                 <?php foreach ($timetable->finishedLessons($UID) as $group): ?>
                     <?= $group['index'] ?>
-                <?php foreach ($group['subjects'] as $sid => $item): ?>
-                    <div class="progress-group">
-                        <span class="progress-text"><?= $item['subject'] ?></span>
-                        <span class="float-right"><b><?= $item['done'] ?></b>/<?= $item['plan'] ?></span>
-                        <div class="progress progress-sm">
-                            <div class="progress-bar bg-success" style="width: <?= $item['percent'] ?>%"></div>
+                    <?php foreach ($group['subjects'] as $sid => $item):
+                        $sp1 = ($item['s1'] / $item['plan'] * 100) - $item['percent'];
+                        $sp2 = 100 - $sp1 - $item['percent'];
+                        $sh1 = $item['done']>$item['s1'] ? 0 : $item['s1'] - $item['done'];
+                        ?>
+                        <div class="progress-group">
+                            <span class="progress-text"><?= $item['subject'] ?></span>
+                            <span class="float-right"><b><?= $item['done'] ?></b>/<?= $item['plan'] ?></span>
+                            <div class="progress progress-sm">
+                                <div class="progress-bar bg-success" style="width: <?= $item['percent'] ?>%"></div>
+                                <?php if ($sh1 > 0): ?>
+                                    <div class="progress-bar bg-danger"
+                                         style="width:<?= $sp1 ?>%"><?= $item['s1'] - $item['done'] ?></div>
+                                <?php
+                                endif;
+                                if ($item['s2'] > 0): ?>
+                                    <div class="progress-bar bg-warning"
+                                         style="width:<?= $sp2 ?>%"><?php echo $item['s2'] - ( $item['s1']-$sh1-$item['done'] ) ?></div>
+                                <?php endif; ?>
+                            </div>
                         </div>
-                    </div>
+                    <?php endforeach; ?>
                 <?php endforeach; ?>
-                <?php endforeach; ?>
+                <div class="row">
+                    <div class="col-4"><i class="fa fa-circle text-success"></i> вичитано</div>
+                    <div class="col-4"><i class="fa fa-circle text-danger"></i> 1 семестр</div>
+                    <div class="col-4"><i class="fa fa-circle text-warning"></i> 2 семестр</div>
+                </div>
             </div>
             <div class="card-footer bg-success"><a href="#" class="btn btn-block btn-sm"><?= _("More info") ?> <i
                             class="fas fa-arrow-circle-right"></i></a></div>
