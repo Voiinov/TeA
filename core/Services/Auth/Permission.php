@@ -24,10 +24,50 @@ class Permission extends Auth
      * @param int $uid users id
      * @return bool
      */
-    public static function access(string $section, int $uid=0): bool
+    public static function access(string $section, string $el = null): bool
     {
+        if (parent::isAdmin())
+            return true;
+
         return true;
+
     }
 
+    public static function roleAccess($list = null): bool
+    {
+
+        if (parent::isAdmin())
+            return true;
+
+        return isset($list[parent::userRole()]);
+    }
+
+    public static function pageAccess($page)
+    {
+        if (parent::isAdmin())
+            return true;
+
+        switch ($page) {
+            case("hoursplan"):
+                return parent::userRole() == "moder";
+                break;
+            default:
+                return true;
+        }
+}
+
+    public static function actionAcess($action)
+    {
+        if (parent::isAdmin())
+            return true;
+
+        switch ("") {
+            case("subjectEdit"):
+                return parent::userRole() == "moder";
+                break;
+            default:
+                return true;
+        }
+    }
 
 }

@@ -6,51 +6,68 @@ use Core\Services\Auth\Auth;
 use Core\Services\Cookie;
 use Core\Services\Mods;
 
-class App{
-    
-    static $router;
+class App
+{
 
-    protected $Auth;
+    static Router $router;
 
-    static $cookie;
+//    protected Auth $Auth;
 
-    public function __construct(){
+    static Cookie $cookie;
+
+    public function __construct()
+    {
         // Ініціалізація роутера
         self::$router = new Router();
         // Ініціалізація UserModel
-        $this->Auth = new Auth();
+//        $this->Auth = new Auth();
         // Очищення списку помилок
         self::$cookie = new Cookie();
     }
 
-    public function run(){
-        
-        self::$router->addRoute("about", 'DashboardController', 'about');
-        
-        // Отримання поточного URL
-        $url = $_SERVER['REQUEST_URI'];
+    public function run()
+    {
 
-        if($this->Auth::isLoggedIn()){
-            Mods::init();
-        }else{
+        Auth::init();
 
-            $this::$router->addRoute('/auth', 'AuthController', 'login');
-            $this::$router->addRoute('/register', 'AuthController', 'register');
+//        self::$router->addRoute("about", 'DashboardController', 'about');
 
-            if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit'])) {
-
-                if($_POST['submit']=="register" || $_POST['submit']=="signin"){
-                    
-                    $action = $_POST['submit'];
-                    $this->Auth::$action($_POST);
-                
+        if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit'])) {
+            if ($_POST['submit'] == "register" || $_POST['submit'] == "signin") {
+                $action = $_POST['submit'];
+                if (Auth::$action($_POST)) {
+                    header("Location: " . APP_URL_F);
                 }
-                
             }
-            $url = $_SERVER['REQUEST_URI'] == APP_URL_B . "/auth/register"  ? APP_URL_B . "/auth/register" : APP_URL_B . "/auth/login"; 
+        }
+        // Прибрати GET-параметри із URL (якщо є)
+        //        $url = strtok(str_replace(APP_URL_B, "", $url), '?');
+        $url = strtok(mb_substr(str_replace(APP_URL_B, "", $_SERVER['REQUEST_URI']), 1), '?');
+
+        if (Auth::isLoggedIn()) {
+            self::$router->addRoute("profile", 'DashboardController', 'profile');
+
+            Mods::init();
+        } else {
+            $this::$router->addRoute('auth', 'AuthController', 'login');
+            $this::$router->addRoute('register', 'AuthController', 'register');
+            $this::$router->addRoute('reset', 'AuthController', 'reset');
+            $this::$router->addRoute('new_password', 'AuthController', 'newPassword');
+            $this::$router->addRoute('new_password_sent', 'AuthController', 'newPasswordSent');
+
+            if ($url == "register")
+                $url = "auth/register";
+            elseif ($url == "reset")
+                $url = "reset";
+            elseif ($url == "new_password")
+                $url = "new_password";
+            elseif ($url == "new_password_sent")
+                $url = "new_password_sent";
+            else
+                $url = "auth/login";
+
         }
 
-        // Визначення маршруту та обробка запиту
         self::$router->route($url);
 
     }

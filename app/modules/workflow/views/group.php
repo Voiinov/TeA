@@ -5,7 +5,6 @@ $students = new \Core\Services\Students();
 $G = new \Core\Services\Groups();
 ?>
 <div class="row">
-
     <?php
     if (isset($_GET['lesson'])):
         // Поточний урок для користувача
@@ -112,7 +111,43 @@ $G = new \Core\Services\Groups();
             echo _("There are no scheduled lessons for today");
         }
 
-        return;
+    elseif(isset($_GET["grade_book"])):
+        $gid = (int)$_GET["grade_book"];
+        ?>
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header"><?= _("Grade book") ?></div>
+            <div class="card-body table-responsive p-0" style="height: 300px">
+                <table class="table table-head-fixed text-nowrap">
+            <thead>
+            <tr>
+                <th><?= _("Student") ?></th>
+                <?php
+                foreach ($G->getGroupSubjectsList($gid) as $subject){
+                    echo "<th>" . $subject['name'] . "</th>";
+                    $subjects[$subject['sid']]=$subject['sid'];
+                }
+                ?>
+            </tr>
+            </thead>
+            <?php foreach ($G->getGroupGradeBook($_GET['grade_book']) as $student): ?>
+                <tr>
+                    <td><?= $student['name'] ?></td>
+                    <?php
+                        foreach ($subjects as $sid){
+                            echo "<td>";
+                            echo $student['marks'][$sid] ?? "";
+                            echo "</td>";
+                        }
+                    ?>
+                </tr>
+            <?php endforeach; ?>
+        </table>
+    </div>
+    </div>
+    </div>
+    <?php
     endif;
+
     ?>
 </div>

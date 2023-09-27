@@ -26,9 +26,12 @@ class Cookie {
         return self::getCookie("errors");
     }
 
+    public static function isCookie($name){
+        return $_COOKIE[$name] ?? false;
+    }
     // Метод для отримання значення cookie
     public static function getCookie($name) {
-        return $_COOKIE[$name] ?? false;
+        return $_COOKIE[$name] ?? null;
     }
 
     // Метод для видалення cookie
