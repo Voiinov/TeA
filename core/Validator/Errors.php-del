@@ -1,0 +1,20 @@
+<?php 
+namespace App\Validator;
+
+class Errors{
+
+    private static $errors = [];
+
+    public function addError($placing,$text,$code=null){
+        
+        self::$errors[$placing][$code]=$text;
+
+    }
+
+    public function getErrors($placing=null){
+        return is_null($placing) ? self::$errors : ($errors[$placing] ?? []);
+    }
+
+}
+
+?>
