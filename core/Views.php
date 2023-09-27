@@ -57,16 +57,16 @@ class Views
         $cookie::deleteCookie("errors");
         // Перевірка прав доступу і включення сторінки
 
-        include_once($this->includePath($template, $module));
+        include_once($this->includePath($template));
 
     }
 
     private static function pluginsSets(array $customPlugins): void
     {
-        if(is_array($customPlugins["header"]))
+        if(isset($customPlugins["header"]) && is_array($customPlugins["header"]))
             self::$plugins["header"] = array_merge(self::$plugins["header"],$customPlugins["header"]);
 
-        if(is_array($customPlugins["footer"]))
+        if(isset($customPlugins["footer"]) && is_array($customPlugins["footer"]))
             self::$plugins["footer"] = array_merge(self::$plugins["footer"],$customPlugins["footer"]);
     }
 
@@ -100,49 +100,8 @@ class Views
     }
 
     /**
-     * повертає html тег
-     * @param string $tag вид тегу (meta/script/link)
-     * @param $href посилання
-     * @param array $attr атрибути і/або js код
-     * @return string
-     */
-//    private function tagConstract($tag, $href, $attr): string
-//    {
-//        if ($tag == "link") {
-//            foreach ($href as $link)
-//                return "<link href=\"{$link}\""
-//                    . (empty($attr) ? "" : array_map(function ($key, $val) {
-//                        return "{$key}=\"{$val}\"\n";
-//                    }, array_keys($attr), $attr))
-//                    . ">";
-//        }
-//
-//        if ($tag == "jscode") {
-//            foreach ($href as $link)
-//                return "<script src=\"{$link}\""
-//                    . (empty($attr) ? "" : array_map(function ($key, $val) {
-//                        return "{$key}=\"{$val}\"\n";
-//                    }, array_keys($attr), $attr))
-//                    . ">";
-//        }
-//
-//        if ($tag == "jscode") {
-//            return "<script"
-//                . (empty($attr) ? "" : array_map(function ($key, $val) {
-//                    return "{$key}=\"{$val}\"\n";
-//                }, array_keys($attr), $attr))
-//                . "{$href}</script>";
-//        }
-//
-//        if ($tag == "meta") {
-//
-//        }
-//
-//    }
-
-    /**
      * Підключення сторінки
-     * @param string $templapte сторінка
+     * @param string $template сторінка
      */
     private function includePath(string $template): string
     {
@@ -160,22 +119,29 @@ class Views
      */
     protected function sideBarMenu(): void
     {
-        // href - # or link,
-        // icon - Add icons to the links using the .nav-icon class with font-awesome or any other icon font library 
-        // title - текст меню
-        // badge - масив (текст, колір)
-        // permission
-        $menu[0] = ["id" => "dshboard", "href" => APP_URL_F, "icon" => "fas fa-tachometer-alt", "title" => "Dashboard"];
-        $menu[] = ["id" => "journal", "href" => APP_URL_F . "/journal", "icon" => "fas fa-tachometer-alt", "title" => "Journal"];
-        $menu[] = ["id" => "groups", "href" => APP_URL_F . "/groups", "icon" => "fas fa-tachometer-alt", "title" => "Groups"];
+        /**
+         * href - # or link,
+         * icon - Add icons to the links using the .nav-icon class with font-awesome or any other icon font library
+         * title - текст меню
+         * badge - масив (текст, колір)
+         * permission
+         */
+        $menu[0] = ["href" => APP_URL_F, "icon" => "fas fa-tachometer-alt", "title" => _("Dashboard")];
         $menu[] = ["href" => [
-            ["href" => APP_URL_F,
-                "icon" => "fas fa-tachometer-alt",
-                "title" => "Учні"],
-            ["href" => APP_URL_F,
-                "icon" => "fas fa-tachometer-alt",
-                "title" => "Викладачі"],
-        ], "icon" => "fas fa-users", "title" => "Users"];
+            ["href" => APP_URL_F . "/workflow?p=students",
+                "icon" => "fas fa-graduation-cap",
+                "title" => _("Students")],
+            ["href" => APP_URL_F. "/workflow?p=users",
+                "icon" => "fas fa-user",
+                "title" => _("Workflow")],
+            ["href" => APP_URL_F. "/workflow?p=groups",
+                "icon" => "fas fa-users",
+                "title" => _("Groups")],
+            ["href" => APP_URL_F. "/workflow?p=subjects",
+                "icon" => "fas fa-bookmark",
+                "title" => _("Subjects")],
+        ], "icon" => "fas fa-university", "title" => _("Workflow")];
+        $menu[] = ["href" => APP_URL_F . "/synchronizer", "permission"=>["moder"=>true], "icon" => "fas fa-download", "title" => _("Synchronizer")];
 
         self::mParse($menu);
 
@@ -217,24 +183,27 @@ class Views
      */
     private static function sideBarMenuItemConstruct($title, $href, $icon, $badge, $permission, $tree = null)
     {
-        if (self::Permissions()::access($href)) {
-
-            if (!is_null($icon))
-                $icon = "<i class='nav-icon $icon'></i> ";
-
-            if (!is_null($tree))
-                $tree = "<i class=\"fas fa-angle-left right\"></i>";
-
-            // $badge = !is_null($badge) ?: "<i class=\"fas fa-angle-left right\"></i>";
-
-            echo "<a href='{$href}' class='nav-link'>{$icon}<p>";
-            echo $title;
-            echo $tree;
-            echo $badge;
-            echo "</p></a>";
+        if($permission !== null) {
+            if (!self::Permissions()::roleAccess($permission)) {
+                return;
+            }
         }
 
+        if (!is_null($icon))
+            $icon = "<i class='nav-icon $icon'></i> ";
+
+        if (!is_null($tree))
+            $tree = "<i class=\"fas fa-angle-left right\"></i>";
+
+        // $badge = !is_null($badge) ?: "<i class=\"fas fa-angle-left right\"></i>";
+
+        echo "<a href='{$href}' class='nav-link'>{$icon}<p>";
+        echo $title;
+        echo $tree;
+        echo $badge;
+        echo "</p></a>";
     }
+
 }
 
 

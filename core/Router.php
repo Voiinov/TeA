@@ -22,8 +22,7 @@ class Router
 
     public function route($url)
     {
-        // Прибрати GET-параметри із URL (якщо є)
-        $url = strtok(str_replace(APP_URL_B, "", $url), '?');
+
         $module = "dashboard";
 
         if (isset($this->routes[$url])) {
@@ -45,7 +44,6 @@ class Router
             echo '<p>404 Not Found</p>';
             return;
         }
-
 
         if(!Permission::access( $url )){
             echo '<p>Access denied</p>';
