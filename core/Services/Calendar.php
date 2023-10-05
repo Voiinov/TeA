@@ -6,11 +6,11 @@ use Core\Database;
 use Core\Services\Auth\Auth;
 use Core\Services\Groups;
 use Core\Services\Study;
+
 class Calendar
 {
     private array $options;
     private Groups $groups;
-
 
     public function __construct()
     {
@@ -21,10 +21,12 @@ class Calendar
     {
         return Database::getInstance();
     }
+
     private function STD(): Study
     {
         return Study::getInstance();
     }
+
     public function get(string $calendar = "timetable", array $options = [])
     {
         if (method_exists($this, $calendar)) {
@@ -43,17 +45,36 @@ class Calendar
     {
         $data = [];
         foreach ($this->getTimetable() as $item) {
-            $groupIndex = sprintf($item['mask'],self::STD()->getCourse($item['open_date'],$item['end']));
+            $groupIndex = sprintf($item['mask'], self::STD()->getCourse($item['open_date'], $item['end']));
             $data[] = [
                 "id" => $item["id"],
                 "title" => $item["title"] . " (" . $groupIndex . " група)",
                 "start" => $item['start'],
-                "end" =>$item['end'],
-                "group"=>$groupIndex,
+                "description" => $this->getCalendarDescriptionText($item),
+                "end" => $item['end'],
+                "gid" => $item['gid'],
+                "group" => $groupIndex,
 
             ];
         }
         return $data;
+    }
+
+    private function getCalendarDescriptionText($data): string
+    {
+        return "
+<div class='row'>
+<div class='col-6'>
+<div class='text-right'>" . _("Start time") . "</div>
+<div class='text-right text-danger'><h4>" . date("H:i", strtotime($data['start'])) . "</h4></div>
+</div>
+<div class='col-6'>
+<div>" . _("End time") . "</div>
+<div class='text-success'><h4>" . date("H:i", strtotime($data['end'])) . "</h4></div>
+</div>
+</div>
+<a href='" . APP_URL_F . "/workflow?p=group&grade_book=" . $data['gid'] . "&sid=" . $data['sid'] . "' type=\"button\" class=\"btn btn-danger btn-block btn-sm\"><i class=\"fa fa-book\"></i> " . _("Assessment") . " </a>
+";
     }
 
     private function timetableforsubject()
@@ -94,7 +115,7 @@ class Calendar
         $sql .= " LEFT JOIN wf_groups ON wf_timetable.gid=wf_groups.id";
         $sql .= " WHERE wf_timetable.sid IN($ids) AND start>=? AND end<=?";
 
-        return self::DB()->query($sql, [$this->options['start'],$this->options['end']], true);
+        return self::DB()->query($sql, [$this->options['start'], $this->options['end']], true);
     }
 
 }

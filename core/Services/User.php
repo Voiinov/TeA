@@ -41,12 +41,15 @@ class User
      */
     public function getUserById($id)
     {
-        $sql = "SELECT users.*,options.value AS postShortName,options.description AS postFullName FROM users";
+        $sql = "SELECT users.*,options.value AS postShortName,options.description AS postFullName";
+        $sql .= ",status.value AS user_status,status.description AS user_status_options,status.level AS user_status_level";
+        $sql .= " FROM users";
         $sql .= " LEFT JOIN options ON (options.id=users.post AND options.option='post')";
+        $sql .= " LEFT JOIN options AS status ON (status.id=users.status AND status.option='status')";
         $sql .= " WHERE users.id = :id";
         $result = self::DB()->query($sql, [':id' => $id]);
         // Повернути результат запиту як об'єкт або null, якщо користувач не знайдений
-        return $result->fetch();
+        return $result->fetch(2);
     }
 
     public static function getUserByResetToken($token)
@@ -175,7 +178,7 @@ class User
     /**
      * Повертає посилання на логотип користувача
      */
-    public static function avatar(int $uid = null, string $gender = null)
+    public static function avatar(int $uid, string $gender = null)
     {
         $path = "public/storage/avatars/u{$uid}.jpg";
         if (file_exists(APP_PATH . "/" . $path))

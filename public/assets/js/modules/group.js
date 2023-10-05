@@ -21,8 +21,8 @@ $(function () {
             dataType: "json",
         })
             .done(function (data) {
-                if(data !== 'null') {
-                    if (data >= 0) {
+                if(data >=0 ) {
+                    if (data > 0) {
 
                         $("#" + student + " .mark-place").html(data);
                         $("#" + student + " button.missing").removeClass("active");

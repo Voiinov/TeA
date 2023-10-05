@@ -41,7 +41,7 @@ class Profile extends Views
 
     protected static function getContent($page="index"){
 
-        include("pages/" . $page . ".php");
+        include("views/" . $page . ".php");
 
     }
 
@@ -51,6 +51,7 @@ class Profile extends Views
             "module"=>self::$instance,
             "title"=>_("Profile"),
             "page"=>"profile",
+            "plugins"=>["footer"=>["customJSCode"=>["src"=> "/js/modules/synchronizer.js"]]]
             ];
     }
 

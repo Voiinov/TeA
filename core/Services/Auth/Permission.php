@@ -56,13 +56,14 @@ class Permission extends Auth
         }
 }
 
-    public static function actionAcess($action)
+    public static function actionAcess($action): bool
     {
         if (parent::isAdmin())
             return true;
 
-        switch ("") {
+        switch ($action) {
             case("subjectEdit"):
+            case("getUserCertificates"):
                 return parent::userRole() == "moder";
                 break;
             default:

@@ -18,8 +18,8 @@ class Views
 
     // підключені плагіни
     protected static array $plugins = [
-            "header" => ["googleFont" => [], "fontAwesomeIcons" => [], "adminLTE" => [], "Ionicons" => []],
-            "footer" => ["jQuery" => [], "bootstrap" => [], "jqueryValidation" => [], "adminLTE" => [], "app" => []
+            "header" => ["googleFont" => [], "fontAwesomeIcons" => [], "adminLTE" => [], "Ionicons" => [], "toastr" => []],
+            "footer" => ["jQuery" => [], "bootstrap" => [], "jqueryValidation" => [], "adminLTE" => [], "sweetalert2" => [], "toastr" => [], "app" => []
             ]
         ];
     protected $cookie;
@@ -78,8 +78,14 @@ class Views
     private function getPlugins(string $layout): void
     {
         foreach (self::$plugins[$layout] as $plugin => $params) {
-            if (function_exists($plugin))
-                echo call_user_func_array($plugin, [$layout, $params]) . "\n";
+            if (function_exists($plugin)) {
+                if(is_array($params) && count($params)>0){
+                    foreach ($params as $key => $val)
+                        echo call_user_func_array($plugin, [$layout, [$key=>$val]]) . "\n";
+                }else{
+                    echo call_user_func_array($plugin, [$layout, $params]) . "\n";
+                }
+            }
         }
 
     }
@@ -96,7 +102,7 @@ class Views
 
     public function pageTitle(): string
     {
-        return self::$pageOptions['title'] . " | " . "TeA";
+        return implode(" | ", [self::$pageOptions['title'], self::$pageOptions['AppName']]);
     }
 
     /**

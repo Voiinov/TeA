@@ -16,7 +16,7 @@ class Api
     public function giveRating(array $data)
     {
 
-        if ($data['mark'] == 0) {
+        if ($data['mark'] < 0) {
             self::DB()->query("DELETE FROM wf_students_gradebook WHERE lessonid=:lessonid AND studentid=:studentid", [
                 "lessonid" => $data['lid'],
                 "studentid" => $data['student']
