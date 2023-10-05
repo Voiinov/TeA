@@ -5,5 +5,5 @@
       Template: <a href="https://adminlte.io">AdminLTE.io</a>
     </div>
     <!-- Default to the left -->
-    <?= $AppName ?> &copy; 2023
+      <?= $AppName ?> &copy; 2023 | Developed by <a href="https://www.linkedin.com/in/serhiy-voinov/" target="_blank">Voinov Serhii</a>
   </footer>

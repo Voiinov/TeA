@@ -64,24 +64,20 @@ $group = 0;
             <div class="card-body p-2">
                 <?php foreach ($timetable->finishedLessons($UID) as $group): ?>
                     <?= $group['index'] ?>
-                    <?php foreach ($group['subjects'] as $sid => $item):
-                        $sp1 = ($item['s1'] / $item['plan'] * 100) - $item['percent'];
-                        $sp2 = 100 - $sp1 - $item['percent'];
-                        $sh1 = $item['done']>$item['s1'] ? 0 : $item['s1'] - $item['done'];
-                        ?>
+                    <?php foreach ($group['subjects'] as $sid => $item): ?>
                         <div class="progress-group">
-                            <span class="progress-text"><?= $item['subject'] ?></span>
+                            <span class="progress-text"><a href="<?= APP_URL_F . "/workflow?p=subjects&sid={$sid}"?>"><?= $item['subject'] ?></a></span>
                             <span class="float-right"><b><?= $item['done'] ?></b>/<?= $item['plan'] ?></span>
                             <div class="progress progress-sm">
-                                <div class="progress-bar bg-success" style="width: <?= $item['percent'] ?>%"></div>
-                                <?php if ($sh1 > 0): ?>
+                                <div class="progress-bar bg-success" style="width: <?= $item['%'] ?>%"></div>
+                                <?php if ($item[1]['p'] > 0): ?>
                                     <div class="progress-bar bg-danger"
-                                         style="width:<?= $sp1 ?>%"><?= $item['s1'] - $item['done'] ?></div>
+                                         style="width:<?= $item[1]['%'] ?>%"><?= $item[1]['h'] ?></div>
                                 <?php
                                 endif;
-                                if ($item['s2'] > 0): ?>
+                                if ($item[2]['p'] > 0): ?>
                                     <div class="progress-bar bg-warning"
-                                         style="width:<?= $sp2 ?>%"><?php echo $item['s2'] - ( $item['s1']-$sh1-$item['done'] ) ?></div>
+                                         style="width:<?= $item[2]['%'] ?>%"><?php echo $item[2]['h'] ?></div>
                                 <?php endif; ?>
                             </div>
                         </div>

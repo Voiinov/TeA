@@ -30,18 +30,18 @@ class Students
         return (date("md") == date("md", strtotime($date)));
     }
 
-    public function outOfListCheck($enrolled,$expelled,$ondate)
+    public function outOfListCheck($enrolled,$expelled,$onDate)
     {
         if(is_null($enrolled) && is_null($expelled))
             return false;
 
-        $ondate = strtotime($ondate);
+        $onDate = strtotime($onDate);
 
-        if(!is_null($enrolled) && strtotime($enrolled)>$ondate)
-            return _("Enrolled on") . date(" d.m.Y",$ondate);
+        if(!is_null($enrolled) && strtotime($enrolled)>$onDate)
+            return _("Enrolled on") . " " . $enrolled;
 
-        if(!is_null($expelled) && strtotime($expelled)<=$ondate)
-            return _("Expelled on") . date(" d.m.Y",$ondate);
+        if(!is_null($expelled) && strtotime($expelled)<=$onDate)
+            return _("Expelled on") . " " . $expelled;
 
 
         return false;

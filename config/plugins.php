@@ -1,63 +1,61 @@
 <?php
-function googleFont($layout, $param)
+function googleFont($layout, $param):string
 {
     return "<!-- Google Font: Source Sans Pro -->
     <link rel=\"stylesheet\" href=\"https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback\">";
 }
 
-function fontAwesomeIcons($layout, $param)
+function fontAwesomeIcons($layout, $param):string
 {
     return "    <!-- Font Awesome -->
     <link rel=\"stylesheet\" href=\"" . APP_ASSETS_FOLDER . "/plugins/fontawesome-free/css/all.css\">";
 }
 
-function adminLTE($layout, $param)
+function adminLTE($layout, $param):string
 {
-
     if ($layout == "header")
         return "    <!-- Theme style -->
         <link rel=\"stylesheet\" href=\"" . APP_ASSETS_FOLDER . "/css/adminlte.min.css\">";
 //    if ($layout == "footer")
-        return "<script src=\"" . APP_ASSETS_FOLDER . "/js/adminlte.js\"></script>";
+    return "<script src=\"" . APP_ASSETS_FOLDER . "/js/adminlte.js\"></script>";
 
 }
 
-function jQuery($layout, $param)
+function jQuery($layout, $param):string
 {
     return "<!-- jQuery -->
     <script src=\"" . APP_ASSETS_FOLDER . "/plugins/jquery/jquery.min.js\"></script>";
 }
 
-function bootstrap($layout, $params)
+function bootstrap($layout, $params):string
 {
     return "<!-- Bootstrap 4 -->\n<script src=\"" . APP_ASSETS_FOLDER . "/plugins/bootstrap/js/bootstrap.bundle.min.js\"></script>";
 }
 
-function app($layout, $params)
+function app($layout, $params):string
 {
     return "<script src=\"" . APP_ASSETS_FOLDER . "/js/app.js\"></script>";
 }
 
-function jqueryValidation($layout, $params)
+function jqueryValidation($layout, $params):string
 {
-    return "<!-- query-validation -->\n<script src=\"" . APP_ASSETS_FOLDER . "/plugins/jquery-validation/jquery.validate.min.js\"></script>\n" .
-        "<script src=\"" . APP_ASSETS_FOLDER . "/plugins/jquery-validation/jquery.validate.min.js\"></script>";
+return "<!-- query-validation -->\n<script src=\"" . APP_ASSETS_FOLDER . "/plugins/jquery-validation/jquery.validate.min.js\"></script>\n<script src=\"" . APP_ASSETS_FOLDER . "/plugins/jquery-validation/additional-methods.min.js\"></script>";
 }
 
 function customJSCode($layout, $params): string
 {
-    if(isset($params["code"])){
+    if (isset($params["code"])) {
         return "<script>" . $params["code"] . "</script>";
     }
 
-    if(isset($params["src"])){
+    if (isset($params["src"])) {
         return '<script src="' . APP_ASSETS_FOLDER . $params["src"] . '"></script>';
     }
     return "";
 
 }
 
-function Ionicons($layout)
+function Ionicons($layout):string
 {
     return "<!-- Font Awesome -->\n<link rel=\"stylesheet\" href=\"https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css\">";
 }
@@ -65,7 +63,8 @@ function Ionicons($layout)
 /**
  * DataTables is a plug-in for the jQuery Javascript library. It is a highly flexible tool, built upon the foundations of progressive enhancement, that adds all of these advanced features to any HTML table.
  */
-function DataTables($layout){
+function DataTables($layout):string
+{
     if ($layout == "header")
         return "
         <!-- DataTables -->
@@ -85,13 +84,36 @@ function DataTables($layout){
 <script src=\"" . APP_ASSETS_FOLDER . "/plugins/pdfmake/vfs_fonts.js\"></script>
 <script src=\"" . APP_ASSETS_FOLDER . "/plugins/datatables-buttons/js/buttons.html5.min.js\"></script>
 <script src=\"" . APP_ASSETS_FOLDER . "/plugins/datatables-buttons/js/buttons.print.min.js\"></script>
-<script src=\"" . APP_ASSETS_FOLDER . "/plugins/datatables-buttons/js/buttons.colVis.min.js\"></script>";
+<script src=\"" . APP_ASSETS_FOLDER . "/plugins/datatables-buttons/js/buttons.colVis.min.js\"></script>
+<script>Object.assign(DataTable.defaults, {
+     'responsive': false,
+     'lengthChange': true,
+     'autoWidth': false,
+     'buttons':['excel', 'pdf', 'print', 'colvis'],
+     'language': {
+        'url':'" . APP_ASSETS_FOLDER . "/plugins/datatables/localization/" . APP_LANG . ".json'
+      }
+})</script>";
 }
 
-function fullcalendar($layout){
+function fullcalendar($layout):string
+{
     return "<!-- fullCalendar -->
 <script src=\"" . APP_ASSETS_FOLDER . "/plugins/moment/moment.min.js\"></script>
 <script src=\"" . APP_ASSETS_FOLDER . "/plugins/fullcalendar/index.global.min.js\"></script>
 <script src=\"" . APP_ASSETS_FOLDER . "/plugins/fullcalendar/locales-all.min.js\"></script>";
 
+}
+
+function toastr($layout, $param): string
+{
+    if ($layout == "header")
+        return "    <!-- Toastr -->
+        <link rel=\"stylesheet\" href=\"" . APP_ASSETS_FOLDER . "/plugins/toastr/toastr.css\">";
+    return "    <!-- Toastr -->\n<script src=\"" . APP_ASSETS_FOLDER . "/plugins/toastr/toastr.min.js\"></script>";
+}
+
+function sweetalert2($layout, $param): string
+{
+    return "    <!-- SweetAlert2  -->\n<script src=\"" . APP_ASSETS_FOLDER . "/plugins/sweetalert2/sweetalert2.min.js\"></script>";
 }

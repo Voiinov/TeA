@@ -1,4 +1,34 @@
 $(function () {
+
+    $("#getUserCertificates").on("click", function(){
+        $.ajax({
+            url: "public/api.php",
+            beforeSend: function (xhr) {
+                $(".overlay").show();
+            },
+            data: {
+                module: "synchronizer",
+                action: "getUserCertificates"
+            },
+            type: "GET",
+            dataType: "json",
+        }).done(function (data) {
+            toastr.success('Дані отримано');
+            console.log(data);
+        })
+            .fail(function (xhr, status, errorThrown) {
+
+                toastr.warning("Виникла помилка:" + errorThrown);
+                console.log("Error: " + errorThrown);
+                console.log("Status: " + status);
+                console.dir(xhr);
+
+            })
+            .always(function () {
+                $(".overlay").hide();
+            });
+    });
+
     $("#planGetData").on("click", function () {
         $.ajax({
             url: "public/api.php",
@@ -20,6 +50,7 @@ $(function () {
         })
             .fail(function (xhr, status, errorThrown) {
 
+                toastr.warning(errorThrown);
                 console.log("Error: " + errorThrown);
                 console.log("Status: " + status);
                 console.dir(xhr);
@@ -44,7 +75,7 @@ $(function () {
         }).done(function (data) {
             $.each(data, function (key, value) {
                 $("#timetable tr:last").after("<tr><td>" + value['id'] + "</td><td>" + value['subject'] + "</td><td>" +
-                    value['group'] + "</td><td>" + value['user'] + "</td><td>" + value['date'] + "</td>"+
+                    value['group'] + "</td><td>" + value['user'] + "</td><td>" + value['date'] + "</td>" +
                     "<td>" + value['start'] + "</td><td>" + value['end'] + "</td></tr>");
             });
         })

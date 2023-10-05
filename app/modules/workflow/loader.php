@@ -90,7 +90,14 @@ class Workflow extends Views
             "module" => self::$instance,
             "title" => _("Group"),
             "page" => "group",
-            "plugins" => ["footer" => ["customJSCode" => ["src" => "/js/modules/group.js"]]]
+            "plugins" => [
+                "header" => ["DataTables" => []],
+                "footer" => ["DataTables" => [], "customJSCode" => ["code" => '$(function () {
+                table = new DataTable("#studentsList");
+                table.on(\'init\',function(){
+                table.buttons().container().appendTo("#studentsList_wrapper .col-md-6:eq(0)");
+            })});',"src" => "/js/modules/group.js"]]
+                ]
         ];
     }
 
@@ -103,10 +110,10 @@ class Workflow extends Views
             "plugins" => [
                 "header" => ["DataTables" => []],
                 "footer" => ["DataTables" => [], "customJSCode" => ["code" => '$(function () {
-                    $("#studentsList").DataTable({
+                    new DataTable("#studentsList",{
                       "responsive": true, "lengthChange": false, "autoWidth": false,
                       "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-                    }).buttons().container().appendTo("#example1_wrapper .col-md-6:eq(0)");
+                    }).buttons().container().appendTo("#studentsList_wrapper .col-md-6:eq(0)");
                   });']
                 ]
             ]
@@ -123,10 +130,10 @@ class Workflow extends Views
             "plugins" => [
                 "header" => ["DataTables" => []],
                 "footer" => ["DataTables" => [], "customJSCode" => ["code" => '$(function () {
-                    $("#studentsList").DataTable({
+                   new DataTable("#studentsList",{
                       "responsive": true, "lengthChange": false, "autoWidth": false,
                       "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-                    }).buttons().container().appendTo("#example1_wrapper .col-md-6:eq(0)");
+                    }).buttons().container().appendTo("#studentsList_wrapper .col-md-6:eq(0)");
                   });']
                 ]
             ]
@@ -160,10 +167,10 @@ class Workflow extends Views
             "plugins" => [
                 "header" => ["DataTables" => []],
                 "footer" => ["DataTables" => [], "customJSCode" => ["code" => '$(function () {
-                    $("#studentsList").DataTable({
+                    new DataTable("#studentsList",{
                       "responsive": true, "lengthChange": false, "autoWidth": false,
                       "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-                    }).buttons().container().appendTo("#example1_wrapper .col-md-6:eq(0)");
+                    }).buttons().container().appendTo("#studentsList_wrapper .col-md-6:eq(0)");
                   });']
                 ]
             ]
@@ -180,10 +187,10 @@ class Workflow extends Views
             "plugins" => [
                 "header" => ["DataTables" => []],
                 "footer" => ["DataTables" => [], "customJSCode" => ["code" => '$(function () {
-                    $("#studentsList").DataTable({
+                   new DataTable("#studentsList",{
                       "responsive": true, "lengthChange": false, "autoWidth": false,
                       "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-                    }).buttons().container().appendTo("#example1_wrapper .col-md-6:eq(0)");
+                    }).buttons().container().appendTo("#studentsList_wrapper .col-md-6:eq(0)");
                   });']
                 ]
             ]
@@ -200,10 +207,10 @@ class Workflow extends Views
             "plugins" => [
                 "header" => ["DataTables" => []],
                 "footer" => ["DataTables" => [], "customJSCode" => ["code" => '$(function () {
-                    $("#studentsList").DataTable({
+                    new DataTable("#studentsList",{
                       "responsive": true, "lengthChange": false, "autoWidth": false,
                       "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-                    }).buttons().container().appendTo("#example1_wrapper .col-md-6:eq(0)");
+                    }).buttons().container().appendTo("#studentsList_wrapper .col-md-6:eq(0)");
                   });']
                 ]
             ]

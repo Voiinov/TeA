@@ -1,14 +1,24 @@
 <?php
-$U = new \Core\Services\User();
-$timetable = new \Core\Services\Timetable();
-$students = new \Core\Services\Students();
-$G = new \Core\Services\Groups();
+
+use Core\Services\Auth\Auth;
+use Core\Services\Students;
+use Core\Services\Study;
+use Core\Services\Timetable;
+use Core\Services\User;
+use Core\Services\Groups;
+
+$U = new User();
+$timetable = new Timetable();
+$students = new Students();
+$study = new Study();
+$G = new Groups();
+
 ?>
 <div class="row">
     <?php
     if (isset($_GET['lesson'])):
-        // Поточний урок для користувача
-        $lesson = $timetable->getLesson(\Core\Services\Auth\Auth::userID(), $_GET['lesson']);
+    // Поточний урок для користувача
+        $lesson = $timetable->getLesson(Auth::userID(), $_GET['lesson']);
         if ($lesson) {
             $start = strtotime($lesson['start']);
             $end = strtotime($lesson['end']);
@@ -20,11 +30,11 @@ $G = new \Core\Services\Groups();
                         <table class="table projects" id="<?= $lesson['id'] ?>">
                             <?php foreach ($students->getGroupStudentsList($lesson['gid'], $lesson['id']) as $student): ?>
                                 <?php
-                                $outOfList = $students->outOfListCheck($student["enrolled"],$student["expelled"],$lesson['start']);
+                                $outOfList = $students->outOfListCheck($student["enrolled"], $student["expelled"], $lesson['start']);
 
                                 $missing = "";
 
-                                if ($student['mark'] == -1) {
+                                if (isset($student['mark']) && $student['mark'] == 0) {
                                     $student['mark'] = "Н";
                                     $markColor = "danger";
                                     $missing = "active";
@@ -34,10 +44,10 @@ $G = new \Core\Services\Groups();
                                     $markColor = "gray";
                                 }
                                 ?>
-                                <tr id="<?= $student['id'] ?>" class="<?php echo $outOfList ? "bg-gray" :"" ?>">
+                                <tr id="<?= $student['id'] ?>" class="<?php echo $outOfList ? "bg-gray" : "" ?>">
                                     <td><input type="checkbox"></td>
                                     <td>
-                                        <a type="button" href="<?= APP_URL_F ?>/profile?s=<?= $student['id'] ?>"><img
+                                        <a type="button" href="<?= APP_URL_F ?>/profile?s=<?= $student['id'] ?>"><img alt=""
                                                     class="table-avatar img-bordered border-<?= $markColor ?>"
                                                     src="<?php echo is_null($student['photo']) ? "public/storage/img/ava_" . $student['gender'] . "_user.jpg" : $student['photo'] ?>"></a>
                                     </td>
@@ -48,7 +58,10 @@ $G = new \Core\Services\Groups();
                                     <td>
                                         <?php if (!$outOfList): ?>
                                             <div class="btn-group btn-group-sm user-mark">
-                                                <button type="button" data-mark="-1" class="btn btn-block btn-outline-danger btn-sm mark missing <?= $missing ?>">Н</button>
+                                                <button type="button" data-mark="0"
+                                                        class="btn btn-block btn-outline-danger btn-sm mark missing <?= $missing ?>">
+                                                    Н
+                                                </button>
                                                 <button type="button"
                                                         class="btn btn-default dropdown-toggle dropdown-icon"
                                                         data-toggle="dropdown" aria-expanded="false">
@@ -56,10 +69,11 @@ $G = new \Core\Services\Groups();
                                                     <span class="sr-only">Toggle Dropdown</span>
                                                 </button>
                                                 <div class="dropdown-menu" role="menu">
-                                                    <button data-mark="null" class="dropdown-item mark">&nbsp;-&nbsp;</button>
+                                                    <button data-mark="-1" class="dropdown-item mark">&nbsp;-&nbsp;
+                                                    </button>
                                                     <?php
                                                     for ($i = 1; $i <= 12; $i++)
-                                                        echo "<button class='dropdown-item mark' data-mark=\"{$i}\">{$i}</button>";
+                                                        printf("<button class='dropdown-item mark' data-mark='%s'>%s</button>", $i, $i);
                                                     ?>
                                                 </div>
                                             </div>
@@ -111,43 +125,48 @@ $G = new \Core\Services\Groups();
             echo _("There are no scheduled lessons for today");
         }
 
-    elseif(isset($_GET["grade_book"])):
-        $gid = (int)$_GET["grade_book"];
-        ?>
+    elseif (isset($_GET["grade_book"]) && isset($_GET["sid"])):
+    $gid = (int)$_GET["grade_book"];
+    $sid = (int)$_GET["sid"];
+    ?>
     <div class="col-lg-12">
         <div class="card">
             <div class="card-header"><?= _("Grade book") ?></div>
-            <div class="card-body table-responsive p-0" style="height: 300px">
-                <table class="table table-head-fixed text-nowrap">
-            <thead>
-            <tr>
-                <th><?= _("Student") ?></th>
-                <?php
-                foreach ($G->getGroupSubjectsList($gid) as $subject){
-                    echo "<th>" . $subject['name'] . "</th>";
-                    $subjects[$subject['sid']]=$subject['sid'];
-                }
-                ?>
-            </tr>
-            </thead>
-            <?php foreach ($G->getGroupGradeBook($_GET['grade_book']) as $student): ?>
-                <tr>
-                    <td><?= $student['name'] ?></td>
-                    <?php
-                        foreach ($subjects as $sid){
-                            echo "<td>";
-                            echo $student['marks'][$sid] ?? "";
-                            echo "</td>";
+            <div class="card-body table-responsive p-2">
+                <table class="table table-bordered table-head-fixed text-nowrap" id="studentsList">
+                    <thead>
+                    <tr>
+                        <th><?= _("Education seeker") ?></th>
+                        <th>AVG</th>
+                        <?php
+                        foreach ($timetable->getLessonDatesInStudyYear($gid, $sid, $study->getCurrentStudyPeriod()) as $lesson) {
+                            $date = explode("-",$lesson['start']);
+                            echo "<th>" . $date[1] . "<br><small>/" . $date[0] . "</small></th>";
+                            $list[] = $lesson['id'];
                         }
-                    ?>
-                </tr>
-            <?php endforeach; ?>
-        </table>
-    </div>
-    </div>
-    </div>
-    <?php
-    endif;
+                        ?>
+                    </tr>
+                    </thead>
+                    <?php foreach ($G->getGroupGradeBookBySubject($gid, $sid, $study->getCurrentStudyPeriod()) as $student): ?>
+                        <tr>
+                            <td>
+                                <?= $student['student_name'] ?>
+                            </td>
+                            <td><?php //print_r($student['lessons']) ?><br><?php echo round(array_sum($student['lessons'])/count($student['lessons']),1) ?></td>
+                            <?php
+                                foreach ($list as $lesson){
+                                    echo "<td>";
+                                    echo isset($student['lessons'][$lesson]) ? $student['lessons'][$lesson]>0 ? $student['lessons'][$lesson] :"H" : "";
+                                    echo "</td>";
+                                }
+                            ?>
+                        </tr>
+                    <?php endforeach; ?>
+                </table>
+            </div>
+        </div>
+        <?php
+        endif;
 
-    ?>
-</div>
+        ?>
+    </div>
