@@ -8,7 +8,7 @@ class Groups
 {
     private array $courses = [];
 
-    private static function DB()
+    private static function DB(): Database
     {
         return Database::getInstance();
     }
@@ -18,7 +18,11 @@ class Groups
         return Study::getInstance();
     }
 
-    public function getGroupsList($date = null)
+    /**
+     * @param $date
+     * @return array
+     */
+    public function getGroupsList($date = null): array
     {
 
         $rqst["date"] = is_null($date) ? date("Y-m-d") : $date;
@@ -50,7 +54,12 @@ class Groups
 
     }
 
-    public function getGroupsShortListBySubject(int $sid, bool $actual = true)
+    /**
+     * @param int $sid
+     * @param bool $actual
+     * @return array
+     */
+    public function getGroupsShortListBySubject(int $sid, bool $actual = true): array
     {
         $list = [];
 
@@ -90,25 +99,51 @@ class Groups
 
     }
 
+    /**
+     * Повертає середні оцінки стундентів по предметам
+     * @param int $gid id групи
+     * @return array
+     */
     public function getGroupGradeBook(int $gid): array
     {
+
+        $result = [];
+
         $sql = "SELECT wf_students.id,wf_students.last_name, wf_students.first_name";
         $sql .= ", AVG(wf_students_gradebook.mark) AS mark,wf_students_gradebook.sid";
         $sql .= " FROM wf_students";
         $sql .= " LEFT JOIN wf_students_gradebook ON (wf_students_gradebook.studentid=wf_students.id AND wf_students_gradebook.mark>0)";
         $sql .= " WHERE wf_students.gid=? GROUP BY last_name";
 
+        //  -1 !!!
+
         $data = self::DB()->query($sql, [$gid]);
         if ($data->rowCount() > 0) {
             foreach ($data->fetchAll(2) as $student) {
-                $result[$student['id']]["name"]=$student['last_name'] . " " . $student['first_name'];
-                $result[$student['id']]["marks"][$student['sid']]=$student['mark'];
+                $result[$student['id']]["name"] = $student['last_name'] . " " . $student['first_name'];
+                $result[$student['id']]["marks"][$student['sid']] = $student['mark'];
             }
             return $result;
         }
         return [];
-        return self::DB()->query($sql, [$gid], true);
+    }
 
+    public function getGroupGradeBookBySubject(int $gid, int $sid, array $period): array
+    {
+        $data = [];
+        $sql = "SELECT wf_students.id, CONCAT(wf_students.last_name,' ', wf_students.first_name) AS student_name";
+        $sql .= ",wf_students_gradebook.mark,wf_timetable.id AS lesson_id";
+        $sql .= " FROM wf_students";
+        $sql .= " LEFT JOIN wf_students_gradebook ON (wf_students.id=wf_students_gradebook.studentid AND wf_students_gradebook.sid=:sid)";
+        $sql .= " LEFT JOIN wf_timetable ON (wf_timetable.id=wf_students_gradebook.lessonid AND wf_timetable.start>=:start AND wf_timetable.end<=:end)";
+        $sql .= " WHERE wf_students.gid=:gid";
+        $sql .= " ORDER BY wf_students.last_name,wf_students.first_name ASC";
+
+        foreach (self::DB()->query($sql, ["sid" => $sid, "gid" => $gid, "start" => $period[0], "end" => $period[1]], true) as $student) {
+            $data[$student['id']]["student_name"] = $student['student_name'];
+            $data[$student['id']]["lessons"][$student['lesson_id']] = $student['mark'];
+        }
+        return $data;
     }
 
     public function getSubjectHoursPlan(int $plan = null, array $sid, int $course): array
@@ -126,7 +161,7 @@ class Groups
     }
 
     /**
-     * @param array $list список груп у форматі [group_io=>codes]
+     * @param string $list список груп у форматі [group_io=>codes]
      * @return array
      */
     public function getGroupNamesByCodes(string $list): array

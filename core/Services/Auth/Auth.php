@@ -16,7 +16,7 @@ class Auth
     public static function init()
     {
         if (self::$logedIn === false && self::currentUser()) {
-                self::$logedIn = self::Cookie()::isCookie("session");
+            self::$logedIn = self::Cookie()::isCookie("session");
         }
     }
 
@@ -45,6 +45,11 @@ class Auth
         return self::$user["id"];
     }
 
+    public static function userName()
+    {
+        return self::$user['username'];
+    }
+
     protected static function userStatus()
     {
 
@@ -60,7 +65,7 @@ class Auth
         return self::$user["role"] ?? null;
     }
 
-    public static function isLoggedIn():bool
+    public static function isLoggedIn(): bool
     {
         return self::$logedIn;
     }
@@ -68,9 +73,9 @@ class Auth
     /**
      * Превірка відкритої сесії
      */
-    private static function currentUser():bool
+    private static function currentUser(): bool
     {
-        $sql = "SELECT options.value AS role, users.id FROM users_sessions";
+        $sql = "SELECT options.value AS role, users.id, users.username FROM users_sessions";
         $sql .= " LEFT JOIN users ON users.id=users_sessions.uid";
         $sql .= " LEFT JOIN options ON users.role=options.id";
         $sql .= " WHERE users_sessions.session=:session LIMIT 1";
@@ -113,10 +118,10 @@ class Auth
                 "user_agent" => $_SERVER['HTTP_USER_AGENT'],
             ];
 
-            $sql = "INSERT INTO users_sessions(session,uid,start,ip,user_agent) VALUES(:". implode(",:" ,array_keys($sessionData)) .")";
+            $sql = "INSERT INTO users_sessions(session,uid,start,ip,user_agent) VALUES(:" . implode(",:", array_keys($sessionData)) . ")";
             $sql .= " ON DUPLICATE KEY UPDATE session=:session,user_agent=:user_agent,start=:start";
 
-            self::DB()->query($sql,$sessionData);
+            self::DB()->query($sql, $sessionData);
 
 //            self::DB()->insert("users_sessions", array_keys($sessionData), $sessionData);
 

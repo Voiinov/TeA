@@ -12,7 +12,7 @@
       <!-- Sidebar user panel (optional) -->
       <div class="user-panel mt-3 pb-3 mb-3 d-flex">
         <div class="image">
-          <img src="<?= User::avatar(); ?>" class="img-circle elevation-2" alt="User Image">
+          <img src="<?= User::avatar(\Core\Services\Auth\Auth::userID()); ?>" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
           <a href="profile" class="d-block"><?= User::name() ?></a>
