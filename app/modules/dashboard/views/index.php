@@ -1,7 +1,9 @@
 <?php
 
 use Core\Services\Timetable;
+use App\Helper\Designer;
 
+$Designer = new Designer();
 $timetable = new Timetable();
 $UID = \Core\Services\Auth\Auth::userID();
 $group = 0;
@@ -56,7 +58,7 @@ $group = 0;
             <div class="card-header bg-success">
                 <h3 class="card-title">Вичитано годин</h3>
                 <div class="card-tools">
-                    <a type="button" class="btn btn-tool disabled">
+                    <a type="button" href="dashboard?p=hours" class="btn btn-tool">
                         <i class="fas fa-print"></i>
                     </a>
                 </div>

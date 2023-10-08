@@ -1,3 +1,27 @@
-.fc-event{
+/*.fc-event{
     cursor: pointer;
+}*/
+.print-only {
+    display: none;
+}
+
+.print-only th,
+.print-only td,
+.print-only thead th,
+.print-only tbody + tbody {
+    border: 1px solid black;
+}
+
+
+@media print {
+    .print-only {
+        display: block;
+    }
+
+    .print-only th,
+    .print-only td,
+    .print-only thead th,
+    .print-only tbody + tbody {
+        border: 1px solid black;
+    }
 }

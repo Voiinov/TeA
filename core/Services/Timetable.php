@@ -13,7 +13,8 @@ class Timetable
     {
         return Database::getInstance();
     }
-    private function Calc():Calculator
+
+    private function Calc(): Calculator
     {
         return Calculator::getInstance();
     }
@@ -65,16 +66,16 @@ class Timetable
 
                 if ($item['total'] > 0) {
                     $plan = $item['total'];
-                    $prc =  self::Calc()->getPercent($item['finished'],$item['total'],0);
+                    $prc = self::Calc()->getPercent($item['finished'], $item['total'], 0);
 
-                    if($item['finished'] < $item["1_semester"]) {
+                    if ($item['finished'] < $item["1_semester"]) {
                         $sh1 = $item["1_semester"] - $item['finished'];
                         $sh2 = $item["2_semester"];
-                        $sp1 = self::Calc()->getPercent($item['1_semester'],$item['total'],0) - $prc;
+                        $sp1 = self::Calc()->getPercent($item['1_semester'], $item['total'], 0) - $prc;
                         $sp2 = 100 - $sp1 - $prc;
-                    }else {
+                    } else {
                         $sh2 = $item["total"] - $item['finished'];
-                        $sp2 = self::Calc()->getPercent($item['2_semester'],$item['total'],0) - $prc;
+                        $sp2 = self::Calc()->getPercent($item['2_semester'], $item['total'], 0) - $prc;
                     }
                 }
 
@@ -86,12 +87,12 @@ class Timetable
                         "done" => $item['finished'],
                         "plan" => $plan,
                         "%" => $prc,
-                        1=>[
+                        1 => [
                             "p" => $item["1_semester"],
                             "%" => $sp1,
                             "h" => $sh1,
                         ],
-                        2=>[
+                        2 => [
                             "p" => $item["2_semester"],
                             "%" => $sp2,
                             "h" => $sh2
@@ -122,6 +123,34 @@ class Timetable
         $sql .= " ORDER BY wf_timetable.start";
 
         return self::DB()->query($sql, $data, true);
+    }
+
+    public function getTimetable($uid, $start, $end): array
+    {
+        $sql = "SELECT wf_timetable.*,wf_subjects.name AS title,wf_groups.mask,wf_groups.open_date";
+        $sql .= " FROM wf_timetable";
+        $sql .= " LEFT JOIN wf_subjects ON wf_timetable.sid=wf_subjects.id";
+        $sql .= " LEFT JOIN wf_groups ON wf_timetable.gid=wf_groups.id";
+        $sql .= " WHERE uid=:uid AND start>=:start AND end<=:end";
+
+        foreach (self::DB()->query($sql, ["uid" => $uid, "start" => $start, "end" => $end], true) as $item) {
+            $datetime = strtotime($item['start']);
+            $day = date('j', $datetime);
+
+            $lesson = (int)substr(substr($item['id'], -4), 0, 2);
+            $item["group"] = sprintf($item['mask'], self::STD()->getCourse($item['open_date'], $item['end']));
+            $result[$lesson][$day][] = $item;
+        }
+        return $result;
+    }
+
+    public function getUserPeriods($uid)
+    {
+        $data = [];
+        foreach (self::DB()->query("SELECT YEAR(start) AS year, MONTH(start) AS month FROM wf_timetable WHERE uid=$uid GROUP BY year,month",[],true) as $item){
+            $data[$item['year']][$item['month']] = true;
+        }
+        return $data;
     }
 
 }
