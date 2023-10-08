@@ -15,7 +15,8 @@ function adminLTE($layout, $param):string
 {
     if ($layout == "header")
         return "    <!-- Theme style -->
-        <link rel=\"stylesheet\" href=\"" . APP_ASSETS_FOLDER . "/css/adminlte.min.css\">";
+        <link rel=\"stylesheet\" href=\"" . APP_ASSETS_FOLDER . "/css/adminlte.css\">
+        <link rel=\"stylesheet\" href=\"" . APP_ASSETS_FOLDER . "/css/style.css\">";
 //    if ($layout == "footer")
     return "<script src=\"" . APP_ASSETS_FOLDER . "/js/adminlte.js\"></script>";
 

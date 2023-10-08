@@ -92,12 +92,11 @@ class Subjects
 
         if ($styear == "actual")
             $sql .= " AND wf_timetable.start>=:date";
-
+        
         $sql .= " GROUP BY users.id";
 
         $result = self::DB()->query($sql, ["sid" => $sid, "date" => $this->study->getStudyYearStartDate()], true);
 
         return $result;
     }
-
 }

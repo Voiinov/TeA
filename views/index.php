@@ -10,7 +10,7 @@ $errors = json_decode($errors, true) ?? null;
     <link rel="icon" type="image/x-icon" href="<?= APP_ASSETS_FOLDER . "/images/favicon.ico" ?>">
     <?php $this->getPlugins("header"); ?>
 </head>
-<body class="sidebar-mini layout-fixed">
+<body class="hold-transition sidebar-mini sidebar-collapse">
 <div class="wrapper">
     <?php include($this->includePath("inc/navbar")) ?>
     <?php include($this->includePath("inc/sidebar")) ?>

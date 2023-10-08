@@ -1,13 +1,16 @@
 <?php
+
 namespace App\Modules;
 
 use Core\Views;
 
-Class Dashboard extends Views{
+class Dashboard extends Views
+{
 
     private static $instance = null;
 
-    public static function start(){
+    public static function start()
+    {
         if (self::$instance === null) {
             self::$instance = new self();
         }
@@ -18,7 +21,8 @@ Class Dashboard extends Views{
 
     }
 
-    protected static function getContent($page="index"){
+    protected static function getContent($page = "index")
+    {
 
         include("views/" . $page . ".php");
 
@@ -33,7 +37,7 @@ Class Dashboard extends Views{
 
         $p = $_GET[$key] ?? "index";
 
-        switch ($p){
+        switch ($p) {
             case("students"):
                 return "students";
                 break;
@@ -41,6 +45,8 @@ Class Dashboard extends Views{
                 return "users";
             case("profile"):
                 return "profile";
+            case("hours"):
+                return "hoursPrint";
                 break;
             default:
                 return "index";
@@ -48,16 +54,25 @@ Class Dashboard extends Views{
 
     }
 
+    protected static function hoursPrint()
+    {
+        return[
+            "module"=>self::$instance,
+            "title"=>"Вичитка годин",
+            "page"=>"hours"
+        ];
+    }
+
     protected static function index()
     {
         return [
-            "module"=>self::$instance,
-            "title"=>_("Dashboard"),
-            "page"=>"index",
-            "plugins"=>[
-                "header"=>["DataTables"=>[],"fullcalendar"=>[]],
-                "footer"=>["DataTables"=>[],"fullcalendar"=>[],"customJSCode"=>[
-                    "code"=>"
+            "module" => self::$instance,
+            "title" => _("Dashboard"),
+            "page" => "index",
+            "plugins" => [
+                "header" => ["DataTables" => [], "fullcalendar" => []],
+                "footer" => ["DataTables" => [], "fullcalendar" => [], "customJSCode" => [
+                    "code" => "
 $(function () {
     var date = new Date()
     var d = date.getDate(),
