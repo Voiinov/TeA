@@ -152,7 +152,7 @@ $G = new Groups();
                             <td>
                                 <?= $student['student_name'] ?>
                             </td>
-                            <td><?php //print_r($student['lessons']) ?><br><?php echo round(array_sum($student['lessons'])/count($student['lessons']),1) ?></td>
+                            <td><?php echo round(array_sum($student['lessons'])/count($student['lessons']),1) ?></td>
                             <?php
                                 foreach ($list as $lesson){
                                     echo "<td>";
