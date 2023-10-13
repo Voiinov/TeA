@@ -2,6 +2,7 @@
 
 namespace App\Modules;
 
+use Core\Services\Options;
 use Core\Views;
 
 class Dashboard extends Views
@@ -65,6 +66,7 @@ class Dashboard extends Views
 
     protected static function index()
     {
+        $options = new Options();
         return [
             "module" => self::$instance,
             "title" => _("Dashboard"),
@@ -110,7 +112,7 @@ $(function () {
                   startTime: '08:00', // a start time
                   endTime: '17:00', // an end time
                 },
-        googleCalendarApiKey: 'AIzaSyDDoB7cMLOjeQ8dmgdfXlV16gFcBQXR5w8',
+        googleCalendarApiKey: '".  $options->getOptionValue("googleCalendarId") . "',
         events:{
             googleCalendarId:'m0im41odup88meongd7m3b5odg@group.calendar.google.com'
         }
