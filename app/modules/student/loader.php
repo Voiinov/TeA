@@ -2,9 +2,10 @@
 
 namespace App\Modules;
 
+use Core\Database;
 use Core\Views;
 
-class Profile extends Views
+class Student extends Views
 {
     private static self|null $instance = null;
     private static string $page = "index";
@@ -16,8 +17,14 @@ class Profile extends Views
         }
 
         $p = $get['p'] ?? "index";
+
         return self::getPageRequest($p);
 
+    }
+
+    private static function DB(): Database
+    {
+        return Database::getInstance();
     }
 
     /**
@@ -26,10 +33,9 @@ class Profile extends Views
      */
     protected static function getPageRequest(string $p): array
     {
-        return match ($p) {
+        return match($p) {
             default => self::index()
         };
-
     }
 
     protected static function getContent($page = "index"): void
@@ -39,10 +45,11 @@ class Profile extends Views
 
     protected static function index(): array
     {
-        self::$page = "profile";
+        self::$page = "index";
         return [
             "module" => self::$instance,
-            "title" => _("Profile"),
+            "title" => _("Education seeker"),
+            "page" => "index",
             "plugins" => ["footer" => ["customJSCode" => ["src" => "/js/modules/synchronizer.js"]]]
         ];
     }

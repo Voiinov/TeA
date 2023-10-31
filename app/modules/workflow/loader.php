@@ -4,34 +4,30 @@ namespace App\Modules;
 
 use Core\Database;
 use Core\Services\Auth\Permission;
+use Core\Services\Groups;
 use Core\Views;
 
 class Workflow extends Views
 {
     private static $instance = null;
+    private static string $page = "index";
 
-    public static function start()
+    public static function start(array $get): array
     {
         if (self::$instance === null) {
             self::$instance = new self();
         }
 
-        $preSets = self::getPageRequest("p");
-
-//        if(!method_exists("Workflow",$preSets)) {
-//            return ["title"=>_("This page doesn't seem to exist"),"module" => self::$instance];
-//        }
-
-        return self::$preSets();
+        return self::getPageRequest($get);
 
     }
 
-    protected static function getContent($page = "index")
+    protected static function getContent($page = "index"): void
     {
-        if ($page == "404")
-            include(APP_PATH . "/views/errors/404.php");
+        if (Permission::pageAccess(self::$page))
+            include("views/" . self::$page . ".php");
         else
-            include("views/" . $page . ".php");
+            include(APP_PATH . "/views/errors/404.php");
     }
 
     private static function DB(): Database
@@ -40,42 +36,29 @@ class Workflow extends Views
     }
 
     /**
-     * @param string $key ключ масиву
-     * @return string
+     * @param string $p ключ масиву
+     * @return array
      */
-    protected static function getPageRequest(string $key): string
+    protected static function getPageRequest(array $get): array
     {
-
-        $p = $_GET[$key] ?? "index";
-
-        switch ($p) {
-            case("students"):
-                $page = "students";
-                break;
-            case("users"):
-                $page = "users";
-                break;
-            case("groups"):
-                $page = "groups";
-                break;
-            case("group"):
-                $page = "group";
-                break;
-            case("hoursplan"):
-                $page = "hoursplan";
-                break;
-            case("subjects"):
-                $page = isset($_GET['sid']) ? "subjects_info" : "subjects";
-                break;
-            default:
-                $page = "index";
-        }
-
-        return Permission::pageAccess($page) ? $page : "pageClosed";
-
+        $p = $get['p'] ?? "index";
+        return match ($p) {
+            "students" => self::students(),
+            "users" => self::users($get),
+            "groups" => self::groups(),
+            "group" => self::group(),
+            "hoursplan" => self::hoursplan(),
+            "subjects" => self::subjectPage($get),
+            default => self::index()
+        };
     }
 
-    protected static function pageClosed()
+    protected static function subjectPage(array $get): array
+    {
+        return isset($_GET['sid']) ? self::subjects_info() : self::subjects();
+    }
+
+    protected static function pageClosed(): array
     {
         return [
             "module" => self::$instance,
@@ -84,29 +67,33 @@ class Workflow extends Views
         ];
     }
 
-    protected static function group()
+    protected static function group(): array
     {
+        $Groups = new Groups();
+        $group = $Groups->getGroupById((int)$_GET['grade_book']);
+        self::$page = "group";
         return [
             "module" => self::$instance,
-            "title" => _("Group"),
-            "page" => "group",
+            "title" => _("Group") . " " . $group["index"],
+            "breadcrumbs" => [[_("Groups"), APP_URL_F . "/workflow?p=groups"], [_("Grade book")]],
             "plugins" => [
                 "header" => ["DataTables" => []],
                 "footer" => ["DataTables" => [], "customJSCode" => ["code" => '$(function () {
-                table = new DataTable("#studentsList");
+                table = new DataTable("#studentsList",{fixedColumns:{leftColumns: 1},
+                   scrollX: true,scrollY: 300,select: true,autoWidth: true});
                 table.on(\'init\',function(){
                 table.buttons().container().appendTo("#studentsList_wrapper .col-md-6:eq(0)");
-            })});',"src" => "/js/modules/group.js"]]
-                ]
+            })});', "src" => "/js/modules/group.js"]]
+            ]
         ];
     }
 
     protected static function index(): array
     {
+        self::$page = "index";
         return [
             "module" => self::$instance,
             "title" => _("Workflow"),
-            "page" => "index",
             "plugins" => [
                 "header" => ["DataTables" => []],
                 "footer" => ["DataTables" => [], "customJSCode" => ["code" => '$(function () {
@@ -120,12 +107,12 @@ class Workflow extends Views
         ];
     }
 
-    protected static function users(): array
+    protected static function users(array $get): array
     {
+        self::$page = "users";
         $sets = [
             "module" => self::$instance,
             "title" => _("Teachers"),
-            "page" => "users",
             "breadcrumbs" => [[_("Workflow"), APP_URL_F . "/workflow"], [_("Educators")]],
             "plugins" => [
                 "header" => ["DataTables" => []],
@@ -138,7 +125,8 @@ class Workflow extends Views
                 ]
             ]
         ];
-        if (isset($_GET['newuser'])) {
+        if (isset($get['newuser'])) {
+            self::$page = "users_new";
             $sets['title'] = _("Add new user");
             $sets['page'] = "users_new";
             $sets["breadcrumbs"] = [
@@ -150,19 +138,19 @@ class Workflow extends Views
 
     protected static function hoursplan()
     {
+        self::$page = "hours_planning";
         return [
             "title" => _("Hours planning"),
-            "module" => self::$instance,
-            "page" => "hours_planning"
+            "module" => self::$instance
         ];
     }
 
     protected static function students(): array
     {
+        self::$page = "students";
         return [
             "module" => self::$instance,
             "title" => _("Education seekers"),
-            "page" => "students",
             "breadcrumbs" => [[_("Workflow"), APP_URL_F . "/users"], [_("Education seekers")]],
             "plugins" => [
                 "header" => ["DataTables" => []],
@@ -179,11 +167,11 @@ class Workflow extends Views
 
     protected static function groups(): array
     {
+        self::$page = "groups";
         return [
             "module" => self::$instance,
             "title" => _("Groups"),
-            "page" => "groups",
-            "breadcrumbs" => [[_("Workflow"), APP_URL_F . "/groups"], [_("Groups")]],
+            "breadcrumbs" => [[_("Groups")]],
             "plugins" => [
                 "header" => ["DataTables" => []],
                 "footer" => ["DataTables" => [], "customJSCode" => ["code" => '$(function () {
@@ -199,10 +187,10 @@ class Workflow extends Views
 
     protected static function subjects(): array
     {
+        self::$page = "subjects";
         return [
             "module" => self::$instance,
             "title" => _("Subjects"),
-            "page" => "subjects",
             "breadcrumbs" => [[_("Workflow"), APP_URL_F . "/workflow"], [_("Subjects")]],
             "plugins" => [
                 "header" => ["DataTables" => []],
@@ -221,11 +209,11 @@ class Workflow extends Views
     {
         $link = APP_URL_F . "/workflow";
         $subject = self::DB()->query("SELECT name, shortname FROM wf_subjects WHERE id=:id LIMIT 1", ["id" => (int)$_GET['sid']], true);
+        self::$page = "subjects_info";
         return [
             "module" => self::$instance,
             "subject" => "sime",
             "title" => $subject[0]['name'],
-            "page" => "subjects_info",
             "breadcrumbs" => [[_("Workflow"), $link], [_("Subjects"), $link . "?p=subjects"], [$subject[0]['shortname']]],
             "plugins" => [
                 "header" => ["DataTables" => [], "fullcalendar" => []],

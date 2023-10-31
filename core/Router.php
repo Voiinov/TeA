@@ -6,12 +6,12 @@ use Core\Services\Auth\Permission;
 
 class Router
 {
-    protected $routes = [];
-    protected $controllerNamespace = 'App\Controllers\\';
-    protected $defaultController = 'DashboardController';
-    protected $defaultMethod = 'index';
+    protected array $routes = [];
+    protected string $controllerNamespace = 'App\Controllers\\';
+    protected string $defaultController = 'DashboardController';
+    protected string $defaultMethod = 'index';
 
-    public function addRoute($url, $controller, $method, $module = null)
+    public function addRoute($url, $controller, $method, $module = null): void
     {
         $this->routes[$url] = [
             'controllerName' => $controller,
@@ -20,7 +20,7 @@ class Router
         ];
     }
 
-    public function route($url)
+    public function route($url): void
     {
 
         $module = "dashboard";
@@ -57,5 +57,3 @@ class Router
     }
 
 }
-
-?>

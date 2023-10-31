@@ -175,7 +175,7 @@ class Groups
     /**
      * Повертає список прежметів для групи
      * @param int $gid
-     * @return void
+     * @return array
      */
     public function getGroupSubjectsList(int $gid): array
     {
@@ -192,6 +192,22 @@ class Groups
         $sql .= " WHERE wf_timetable.gid=? GROUP BY wf_subjects.id,wf_subjects.grouped";
 
         return self::DB()->query($sql, [$gid], true);
+    }
+
+    public function getGroupById(int $id): array
+    {
+        $group = [];
+        $sql = "SELECT wf_groups.*,study_professions.title,study_professions.licenses";
+        $sql .= " FROM wf_groups ";
+        $sql .= " LEFT JOIN study_professions ON study_professions.id=wf_groups.profession";
+        $sql .= " WHERE wf_groups.id=?";
+        $data = self::DB()->query($sql,[$id]);
+        if ($data->rowCount() > 0) {
+            $group = $data->fetchAll(2);
+            $group['index'] = sprintf($group[0]['mask'], self::STD()->getCourse(date('c')));
+            return $group;
+        }
+        return $group;
     }
 
 }

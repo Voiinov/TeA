@@ -13,7 +13,7 @@ class Options
 
     public function getOptionValue(string $option):string
     {
-        $data = self::DB()->query("SELECT value FROM options WHERE option=? LIMIT 1",[$option]);
+        $data = self::DB()->query("SELECT value FROM options WHERE param=? LIMIT 1",[$option]);
         if($data->rowCount()>0) {
             $value = $data->fetchAll(2);
             return $value[0]['value'];
@@ -25,7 +25,7 @@ class Options
     {
 
         $sql = "SELECT * FROM options WHERE ";
-        $sql .= is_null($id) ? "option='post'" : "id={$id}";
+        $sql .= is_null($id) ? "param='post'" : "id={$id}";
         $sql .= " ORDER BY level DESC";
 
         return self::DB()->query($sql, [], true);
@@ -36,7 +36,7 @@ class Options
     {
 
         $sql = "SELECT id,value FROM options WHERE ";
-        $sql .= is_null($id) ? "option='role'" : "id={$id}";
+        $sql .= is_null($id) ? "param='role'" : "id={$id}";
         $sql .= " ORDER BY level DESC";
         return self::DB()->query($sql, [], true);
 

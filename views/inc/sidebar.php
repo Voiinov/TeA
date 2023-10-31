@@ -1,5 +1,4 @@
  <?php use Core\Services\User; ?>
- <!-- Main Sidebar Container -->
  <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Logo -->
     <a href="<?= APP_URL_F ?>" class="brand-link">

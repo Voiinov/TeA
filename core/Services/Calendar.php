@@ -53,6 +53,7 @@ class Calendar
                 "description" => $this->getCalendarDescriptionText($item),
                 "end" => $item['end'],
                 "gid" => $item['gid'],
+                "url"=> APP_URL_F . "/workflow?p=group&lesson=" . $item["id"],
                 "group" => $groupIndex,
 
             ];
@@ -62,6 +63,7 @@ class Calendar
 
     private function getCalendarDescriptionText($data): string
     {
+        $sid = $data['grouped'] !==null ? $data['grouped'] : $data["sid"];
         return "
 <div class='row'>
 <div class='col-6'>
@@ -73,7 +75,7 @@ class Calendar
 <div class='text-success'><h4>" . date("H:i", strtotime($data['end'])) . "</h4></div>
 </div>
 </div>
-<a href='" . APP_URL_F . "/workflow?p=group&grade_book=" . $data['gid'] . "&sid=" . $data['sid'] . "' type=\"button\" class=\"btn btn-danger btn-block btn-sm\"><i class=\"fa fa-book\"></i> " . _("Assessment") . " </a>
+<a href='" . APP_URL_F . "/workflow?p=group&grade_book=" . $data['gid'] . "&sid={$sid}' type=\"button\" class=\"btn btn-danger btn-block btn-sm\"><i class=\"fa fa-book\"></i> " . _("Assessment") . " </a>
 ";
     }
 
@@ -94,7 +96,7 @@ class Calendar
     private function getTimetable($uid = null)
     {
 
-        $sql = "SELECT wf_timetable.*,wf_subjects.name AS title, wf_groups.open_date, wf_groups.mask";
+        $sql = "SELECT wf_timetable.*,wf_subjects.name AS title, wf_groups.open_date, wf_groups.mask,wf_subjects.grouped";
         $sql .= " FROM wf_timetable";
         $sql .= " LEFT JOIN wf_subjects ON wf_timetable.sid=wf_subjects.id";
         $sql .= " LEFT JOIN wf_groups ON wf_timetable.gid=wf_groups.id";

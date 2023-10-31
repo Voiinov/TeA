@@ -72,7 +72,9 @@ function DataTables($layout):string
             "<!-- DataTables -->",
             "<link rel=\"stylesheet\" href=\"" . APP_ASSETS_FOLDER . "/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css\">",
             "<link rel=\"stylesheet\" href=\"" . APP_ASSETS_FOLDER . "/plugins/datatables-responsive/css/responsive.bootstrap4.min.css\">",
-            "<link rel=\"stylesheet\" href=\"" . APP_ASSETS_FOLDER . "/plugins/datatables-buttons/css/buttons.bootstrap4.min.css\">"
+            "<link rel=\"stylesheet\" href=\"" . APP_ASSETS_FOLDER . "/plugins/datatables-buttons/css/buttons.bootstrap4.min.css\">",
+            "<link rel=\"stylesheet\" href=\"" . APP_ASSETS_FOLDER . "/plugins/datatables-colreorder/css/colReorder.bootstrap4.min.css\">",
+            "<link rel=\"stylesheet\" href=\"" . APP_ASSETS_FOLDER . "/plugins/datatables-fixedcolumns/css/fixedColumns.bootstrap4.min.css\">"
         ];
     }elseif ($layout == "footer") {
         $arr = ["<!-- DataTables  & Plugins -->",
@@ -82,6 +84,9 @@ function DataTables($layout):string
             "<script src=\"" . APP_ASSETS_FOLDER . "/plugins/datatables-responsive/js/responsive.bootstrap4.min.js\"></script>",
             "<script src=\"" . APP_ASSETS_FOLDER . "/plugins/datatables-buttons/js/dataTables.buttons.min.js\"></script>",
             "<script src=\"" . APP_ASSETS_FOLDER . "/plugins/datatables-buttons/js/buttons.bootstrap4.min.js\"></script>",
+            "<script src=\"" . APP_ASSETS_FOLDER . "/plugins/datatables-colreorder/js/colReorder.bootstrap4.min.js\"></script>",
+            "<script src=\"" . APP_ASSETS_FOLDER . "/plugins/datatables-fixedcolumns/js/dataTables.fixedColumns.min.js\"></script>",
+            "<script src=\"" . APP_ASSETS_FOLDER . "/plugins/datatables-fixedcolumns/js/fixedColumns.bootstrap4.min.js\"></script>",
             "<script src=\"" . APP_ASSETS_FOLDER . "/plugins/jszip/jszip.min.js\"></script>",
             "<script src=\"" . APP_ASSETS_FOLDER . "/plugins/pdfmake/pdfmake.min.js\"></script>",
             "<script src=\"" . APP_ASSETS_FOLDER . "/plugins/pdfmake/vfs_fonts.js\"></script>",
