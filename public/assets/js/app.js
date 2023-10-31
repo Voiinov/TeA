@@ -674,7 +674,7 @@
 
 })(jQuery)
 
-$(function() {
+$(function () {
     let Toast = Swal.mixin({
         toast: true,
         position: 'top-end',
@@ -690,3 +690,29 @@ $(function() {
 
     }
 })
+
+function calendarEventModal(calendar) {
+
+    calendar.jsEvent.preventDefault(); // don't let the browser navigate
+
+    $('#modal-calendar .modal-title').html(calendar.event.title);
+
+    console.log(calendar);
+
+    if (calendar.event.extendedProps.gid == undefined) {
+        $('#modal-calendar .modal-body').html( getGoogleEventDescription(calendar.event) );
+    } else {
+        $('#modal-calendar .modal-body').html(calendar.event.extendedProps.description);
+    }
+    $('#modal-calendar .lesson').attr('href', calendar.event.url);
+    $('#modal-calendar').modal();
+
+}
+
+function getGoogleEventDescription(event) {
+    var description = event.extendedProps.description ?? "";
+    var location = event.extendedProps.location ?? "";
+    return "<p>" + description + "</p>"
+        +  "<p>Прикріплені файли: " + event.extendedProps.attachments.length + "</p>"
+    + location;
+}

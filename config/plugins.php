@@ -66,44 +66,57 @@ function Ionicons($layout):string
  */
 function DataTables($layout):string
 {
-    if ($layout == "header")
-        return "
-        <!-- DataTables -->
-        <link rel=\"stylesheet\" href=\"" . APP_ASSETS_FOLDER . "/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css\">
-        <link rel=\"stylesheet\" href=\"" . APP_ASSETS_FOLDER . "/plugins/datatables-responsive/css/responsive.bootstrap4.min.css\">
-        <link rel=\"stylesheet\" href=\"" . APP_ASSETS_FOLDER . "/plugins/datatables-buttons/css/buttons.bootstrap4.min.css\">";
-    if ($layout == "footer")
-        return "<!-- DataTables  & Plugins -->
-<script src=\"" . APP_ASSETS_FOLDER . "/plugins/datatables/jquery.dataTables.min.js\"></script>
-<script src=\"" . APP_ASSETS_FOLDER . "/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js\"></script>
-<script src=\"" . APP_ASSETS_FOLDER . "/plugins/datatables-responsive/js/dataTables.responsive.min.js\"></script>
-<script src=\"" . APP_ASSETS_FOLDER . "/plugins/datatables-responsive/js/responsive.bootstrap4.min.js\"></script>
-<script src=\"" . APP_ASSETS_FOLDER . "/plugins/datatables-buttons/js/dataTables.buttons.min.js\"></script>
-<script src=\"" . APP_ASSETS_FOLDER . "/plugins/datatables-buttons/js/buttons.bootstrap4.min.js\"></script>
-<script src=\"" . APP_ASSETS_FOLDER . "/plugins/jszip/jszip.min.js\"></script>
-<script src=\"" . APP_ASSETS_FOLDER . "/plugins/pdfmake/pdfmake.min.js\"></script>
-<script src=\"" . APP_ASSETS_FOLDER . "/plugins/pdfmake/vfs_fonts.js\"></script>
-<script src=\"" . APP_ASSETS_FOLDER . "/plugins/datatables-buttons/js/buttons.html5.min.js\"></script>
-<script src=\"" . APP_ASSETS_FOLDER . "/plugins/datatables-buttons/js/buttons.print.min.js\"></script>
-<script src=\"" . APP_ASSETS_FOLDER . "/plugins/datatables-buttons/js/buttons.colVis.min.js\"></script>
-<script>Object.assign(DataTable.defaults, {
-     'responsive': false,
-     'lengthChange': true,
-     'autoWidth': false,
-     'buttons':['excel', 'pdf', 'print', 'colvis'],
-     'language': {
-        'url':'" . APP_ASSETS_FOLDER . "/plugins/datatables/localization/" . APP_LANG . ".json'
-      }
-})</script>";
+    $arr = [];
+    if ($layout == "header") {
+        $arr = [
+            "<!-- DataTables -->",
+            "<link rel=\"stylesheet\" href=\"" . APP_ASSETS_FOLDER . "/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css\">",
+            "<link rel=\"stylesheet\" href=\"" . APP_ASSETS_FOLDER . "/plugins/datatables-responsive/css/responsive.bootstrap4.min.css\">",
+            "<link rel=\"stylesheet\" href=\"" . APP_ASSETS_FOLDER . "/plugins/datatables-buttons/css/buttons.bootstrap4.min.css\">",
+            "<link rel=\"stylesheet\" href=\"" . APP_ASSETS_FOLDER . "/plugins/datatables-colreorder/css/colReorder.bootstrap4.min.css\">",
+            "<link rel=\"stylesheet\" href=\"" . APP_ASSETS_FOLDER . "/plugins/datatables-fixedcolumns/css/fixedColumns.bootstrap4.min.css\">"
+        ];
+    }elseif ($layout == "footer") {
+        $arr = ["<!-- DataTables  & Plugins -->",
+            "<script src=\"" . APP_ASSETS_FOLDER . "/plugins/datatables/jquery.dataTables.min.js\"></script>",
+            "<script src=\"" . APP_ASSETS_FOLDER . "/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js\"></script>",
+            "<script src=\"" . APP_ASSETS_FOLDER . "/plugins/datatables-responsive/js/dataTables.responsive.min.js\"></script>",
+            "<script src=\"" . APP_ASSETS_FOLDER . "/plugins/datatables-responsive/js/responsive.bootstrap4.min.js\"></script>",
+            "<script src=\"" . APP_ASSETS_FOLDER . "/plugins/datatables-buttons/js/dataTables.buttons.min.js\"></script>",
+            "<script src=\"" . APP_ASSETS_FOLDER . "/plugins/datatables-buttons/js/buttons.bootstrap4.min.js\"></script>",
+            "<script src=\"" . APP_ASSETS_FOLDER . "/plugins/datatables-colreorder/js/colReorder.bootstrap4.min.js\"></script>",
+            "<script src=\"" . APP_ASSETS_FOLDER . "/plugins/datatables-fixedcolumns/js/dataTables.fixedColumns.min.js\"></script>",
+            "<script src=\"" . APP_ASSETS_FOLDER . "/plugins/datatables-fixedcolumns/js/fixedColumns.bootstrap4.min.js\"></script>",
+            "<script src=\"" . APP_ASSETS_FOLDER . "/plugins/jszip/jszip.min.js\"></script>",
+            "<script src=\"" . APP_ASSETS_FOLDER . "/plugins/pdfmake/pdfmake.min.js\"></script>",
+            "<script src=\"" . APP_ASSETS_FOLDER . "/plugins/pdfmake/vfs_fonts.js\"></script>",
+            "<script src=\"" . APP_ASSETS_FOLDER . "/plugins/datatables-buttons/js/buttons.html5.min.js\"></script>",
+            "<script src=\"" . APP_ASSETS_FOLDER . "/plugins/datatables-buttons/js/buttons.print.min.js\"></script>",
+            "<script src=\"" . APP_ASSETS_FOLDER . "/plugins/datatables-buttons/js/buttons.colVis.min.js\"></script>",
+            "<script>Object.assign(DataTable.defaults, {
+                 'responsive': false,
+                 'lengthChange': true,
+                 'autoWidth': false,
+                 'buttons':['excel', 'pdf', 'print', 'colvis'],
+                 'language': {
+                    'url':'" . APP_ASSETS_FOLDER . "/plugins/datatables/localization/" . APP_LANG . ".json'
+                  }
+            })</script>"
+        ];
+    }
+        return implode("\n",$arr);
 }
 
 function fullcalendar($layout):string
 {
-    return "<!-- fullCalendar -->
-<script src=\"" . APP_ASSETS_FOLDER . "/plugins/moment/moment.min.js\"></script>
-<script src=\"" . APP_ASSETS_FOLDER . "/plugins/fullcalendar/index.global.min.js\"></script>
-<script src=\"" . APP_ASSETS_FOLDER . "/plugins/fullcalendar/locales-all.min.js\"></script>";
-
+    $arr = [
+        "<!-- fullCalendar -->",
+        "<script src=\"" . APP_ASSETS_FOLDER . "/plugins/moment/moment.min.js\"></script>",
+        "<script src=\"" . APP_ASSETS_FOLDER . "/plugins/fullcalendar/index.global.min.js\"></script>",
+        "<script src=\"" . APP_ASSETS_FOLDER . "/plugins/fullcalendar/locales-all.min.js\"></script>",
+        "<script src=\"" . APP_ASSETS_FOLDER . "/plugins/fullcalendar/packages/google-calendar/index.global.min.js\"></script>"
+    ];
+    return implode("\n",$arr);
 }
 
 function toastr($layout, $param): string

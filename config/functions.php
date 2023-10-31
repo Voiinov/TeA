@@ -11,7 +11,7 @@ define("APP_LANG", "uk");
 define("APP_SESSION_TIME", 3600 * 24);
 /** Публічна папка assets*/
 define("APP_ASSETS_FOLDER", APP_URL_F . "/app/public/assets");
-/** Час дії сесії для якщо користувач вказав "Запам'ятати" */
+/** Час дії сесії, якщо користувач вказав "Запам'ятати" */
 define("APP_SESSION_REMEMBER_TIME", 3600 * 24 * 360);
 /** */
 define("APP_UNSPLASH_KEY", include("unsplash-key.php"));

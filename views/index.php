@@ -12,8 +12,12 @@ $errors = json_decode($errors, true) ?? null;
 </head>
 <body class="hold-transition sidebar-mini sidebar-collapse">
 <div class="wrapper">
-    <?php include($this->includePath("inc/navbar")) ?>
+    <!-- Navbar -->
+        <?php include($this->includePath("inc/navbar")) ?>
+    <!-- /.navbar -->
+    <!-- Main Sidebar Container -->
     <?php include($this->includePath("inc/sidebar")) ?>
+    <!-- /.main sidebar container -->
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
         <section class="content-header">
@@ -25,7 +29,7 @@ $errors = json_decode($errors, true) ?? null;
                     <?php if (isset($breadcrumbs)): ?>
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
-                                <li class="breadcrumb-item"><a href="<?= APP_URL_F ?>">Home</a></li>
+                                <li class="breadcrumb-item"><a href="<?= APP_URL_F ?>"><?= _("Home"); ?></a></li>
                                 <?php
                                 foreach ($breadcrumbs as $item) {
                                     echo '<li class="breadcrumb-item">';
@@ -41,7 +45,7 @@ $errors = json_decode($errors, true) ?? null;
         </section>
         <section class="content">
             <div class="container-fluid">
-                <?= $module->getContent($page); ?>
+                <?= $module->getContent(); ?>
             </div>
         </section>
     </div>

@@ -2,69 +2,60 @@
 
 namespace App\Modules;
 
+use Core\Services\Options;
 use Core\Views;
 
 class Dashboard extends Views
 {
 
     private static $instance = null;
+    private static string $page = "index";
 
-    public static function start()
+    public static function start(array $get): array
     {
         if (self::$instance === null) {
             self::$instance = new self();
         }
 
-        $preSets = self::getPageRequest("p");
+        $p = $get['p'] ?? "index";
 
-        return self::$preSets();
+        return self::getPageRequest($p);
 
     }
 
-    protected static function getContent($page = "index")
+    protected static function getContent($page = "index"): void
     {
 
-        include("views/" . $page . ".php");
+        include("views/" . self::$page . ".php");
 
     }
 
     /**
-     * @param string $key ключ масиву
-     * @return string
+     * @param string $p ключ масиву
+     * @return array
      */
-    protected static function getPageRequest(string $key): string
+    protected static function getPageRequest(string $p): array
     {
 
-        $p = $_GET[$key] ?? "index";
-
-        switch ($p) {
-            case("students"):
-                return "students";
-                break;
-            case("users"):
-                return "users";
-            case("profile"):
-                return "profile";
-            case("hours"):
-                return "hoursPrint";
-                break;
-            default:
-                return "index";
-        }
-
+        return match ($p) {
+            "hours" => self::hoursPrint(),
+            default => self::index()
+        };
     }
 
-    protected static function hoursPrint()
+    protected static function hoursPrint(): array
     {
-        return[
-            "module"=>self::$instance,
-            "title"=>"Вичитка годин",
-            "page"=>"hours"
+        self::$page = "hours";
+        return [
+            "module" => self::$instance,
+            "title" => "Вичитка годин",
+            "page" => "hours"
         ];
     }
 
-    protected static function index()
+    protected static function index(): array
     {
+        $options = new Options();
         return [
             "module" => self::$instance,
             "title" => _("Dashboard"),
@@ -98,22 +89,24 @@ $(function () {
         initialView: 'listWeek',
         firstDay: 1,
         themeSystem: 'bootstrap',
-        eventSources:['api.php?calendar=timetable',{googleCalendarId:'m0im41odup88meongd7m3b5odg@group.calendar.google.com'}],
+        eventSources:[
+            'api.php?calendar=timetable',
+             {
+                googleCalendarId:'m0im41odup88meongd7m3b5odg@group.calendar.google.com',
+                borderColor:'#c49300',
+                textColor:'white',
+                backgroundColor:'#ffc107',
+                eventClick: function(info){ alert('test') }
+            }],
         eventClick: function(info) {
-                    info.jsEvent.preventDefault(); // don't let the browser navigate
-                    $('#modal-calendar .modal-title').html(info.event.title);
-                    $('#modal-calendar .modal-body').html(info.event.extendedProps.description);
-                    $('#modal-calendar .lesson').attr('href','" . APP_URL_F . "/workflow?p=group&lesson=' + info.event.id);
-                    $('#modal-calendar').modal();
+            calendarEventModal(info)
                 },
          businessHours: {
                   startTime: '08:00', // a start time
                   endTime: '17:00', // an end time
                 },
-        googleCalendarApiKey: 'AIzaSyDDoB7cMLOjeQ8dmgdfXlV16gFcBQXR5w8',
-        events:{
-            googleCalendarId:'m0im41odup88meongd7m3b5odg@group.calendar.google.com'
-        }
+        googleCalendarApiKey: '" . $options->getOptionValue("googleCalendarApiKey") . "',
+       
     });
     calendar.render();
 })"

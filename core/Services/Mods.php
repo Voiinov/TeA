@@ -25,7 +25,7 @@ class Mods extends App
 
         $module = "App\Modules\\" . ucfirst($module);
 
-        return $module::start();
+        return $module::start($_GET);
     }
 
     public static function getContent($module, $options = [])
@@ -33,12 +33,12 @@ class Mods extends App
         echo $module;
     }
 
-    public static function init()
+    public static function init(): void
     {
         self::loadPaths();
     }
 
-    private static function loadPaths()
+    private static function loadPaths(): void
     {
         foreach (self::scan() as $modFolder) {
             App::$router->addRoute("{$modFolder}", "DashboardController", "index", $modFolder);

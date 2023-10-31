@@ -36,22 +36,23 @@ class Calculator
         }
     }
 
-    public function getDate($format = "Y-m-d", $arr=[])
+    public function getDate($format = "Y-m-d", $arr = [])
     {
         return date($format, $this->timestamp);
     }
-    public function getDateArr($y=true,$m=false,$d=false): array
+
+    public function getDateArr($y = true, $m = false, $d = false): array
     {
-        if($y) $arr["y"] = date($y, $this->timestamp);
-        if($m) $arr["m"] = date($m, $this->timestamp);
-        if($d) $arr["d"] = date($d, $this->timestamp);
+        if ($y) $arr["y"] = date($y, $this->timestamp);
+        if ($m) $arr["m"] = date($m, $this->timestamp);
+        if ($d) $arr["d"] = date($d, $this->timestamp);
 
         return $arr;
     }
 
     public function getDaysCountInMonth()
     {
-        return date('t',$this->timestamp);
+        return date('t', $this->timestamp);
     }
 
     /**
@@ -74,6 +75,18 @@ class Calculator
     function getPercent(int $part, int $total, int $round = null): float
     {
         return $total == 0 || $part == 0 ? 0 : round($part / $total * 100, $round);
+    }
+
+    public function calculateAcademicSuccess($lessons=0,$mark=0,$na=0): int
+    {
+
+        $param1 = $na==0 ? 1 : $na/$lessons;
+        $param2 = $mark/12;
+
+        echo "$param2*$param1*100 <br>";
+        echo $param2*$param1*100;
+
+        return $param2*$param1*100;
     }
 
 }

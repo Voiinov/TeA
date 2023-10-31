@@ -11,7 +11,7 @@ class Students
         return Database::getInstance();
     }
 
-    public function getGroupStudentsList($gid, $lesson = null)
+    public function getGroupStudentsList($gid, $lesson = null):array
     {
 
         $sql = "SELECT wf_students.id,CONCAT(wf_students.last_name,' ',wf_students.first_name) AS name,wf_students.nick_name,wf_students.photo,";
@@ -25,7 +25,7 @@ class Students
 
     }
 
-    public function isBirthsday($date)
+    public function isBirthsday($date):string
     {
         return (date("md") == date("md", strtotime($date)));
     }
@@ -46,5 +46,18 @@ class Students
 
         return false;
 
+    }
+    public function getStudentInfo($id): array
+    {
+        $sql = "SELECT wf_students.*, COUNT(nonAvailable.mark) AS NA";
+        $sql .= ",count(wf_timetable.id) AS lessonsCount,AVG(marks.mark) AS average";
+        $sql .= " FROM wf_students";
+        $sql .= " LEFT JOIN wf_timetable ON wf_timetable.gid=wf_students.gid";
+        $sql .= " LEFT JOIN wf_students_gradebook AS nonAvailable ON (nonAvailable.studentid=wf_students.id AND nonAvailable.mark=0)";
+        $sql .= " LEFT JOIN wf_students_gradebook AS marks ON (marks.studentid=wf_students.id AND marks.mark>0)";
+        $sql .= " WHERE wf_students.id=?";
+
+        $data = self::DB()->query($sql,[$id]);
+        return $data->rowCount()>0 ? $data->fetchAll(2) : [] ;
     }
 }

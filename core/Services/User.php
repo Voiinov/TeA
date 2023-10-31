@@ -44,8 +44,8 @@ class User
         $sql = "SELECT users.*,options.value AS postShortName,options.description AS postFullName";
         $sql .= ",status.value AS user_status,status.description AS user_status_options,status.level AS user_status_level";
         $sql .= " FROM users";
-        $sql .= " LEFT JOIN options ON (options.id=users.post AND options.option='post')";
-        $sql .= " LEFT JOIN options AS status ON (status.id=users.status AND status.option='status')";
+        $sql .= " LEFT JOIN options ON (options.id=users.post AND options.param='post')";
+        $sql .= " LEFT JOIN options AS status ON (status.id=users.status AND status.param='status')";
         $sql .= " WHERE users.id = :id";
         $result = self::DB()->query($sql, [':id' => $id]);
         // Повернути результат запиту як об'єкт або null, якщо користувач не знайдений

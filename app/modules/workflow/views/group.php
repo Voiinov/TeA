@@ -47,7 +47,7 @@ $G = new Groups();
                                 <tr id="<?= $student['id'] ?>" class="<?php echo $outOfList ? "bg-gray" : "" ?>">
                                     <td><input type="checkbox"></td>
                                     <td>
-                                        <a type="button" href="<?= APP_URL_F ?>/profile?s=<?= $student['id'] ?>"><img alt=""
+                                        <a type="button" href="<?= APP_URL_F ?>/student?id=<?= $student['id'] ?>"><img alt=""
                                                     class="table-avatar img-bordered border-<?= $markColor ?>"
                                                     src="<?php echo is_null($student['photo']) ? "public/storage/img/ava_" . $student['gender'] . "_user.jpg" : $student['photo'] ?>"></a>
                                     </td>

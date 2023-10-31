@@ -111,7 +111,7 @@ $group = 0;
             </div>
             <div class="modal-footer justify-content-between">
                 <button type="button" class="btn btn-default" data-dismiss="modal"><?= _("Close") ?></button>
-                <a href="#" type="button" class="btn btn-primary lesson"><?= _("Lesson") ?></a>
+                <a href="#" type="button" class="btn btn-primary lesson"><?= _("Review") ?></a>
             </div>
         </div>
         <!-- /.modal-content -->
